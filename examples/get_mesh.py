@@ -11,4 +11,4 @@ if __name__ == '__main__':
     import bnp
     importlib.reload(bnp)
     vertices = bnp.io.load_geom("Cube")
-    print(vertices)
+    print(vertices)  # (vtx_num, 3)
