@@ -10,5 +10,7 @@ sys.path.append(str(LIBRARY_ROOT_PATH))
 if __name__ == '__main__':
     import bnp
     importlib.reload(bnp)
+    bnp.scene.remove_objects("debug")
+
     vertices = bnp.io.load_geom("Cube")
     print(vertices)  # (vtx_num, 3)
