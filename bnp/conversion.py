@@ -23,7 +23,7 @@ def mat2np(mat, dtype=np.float32):
 
 def obj2np(obj, geo_type="position", dtype=np.float32, is_local=False):
     local_vertices = mesh2np(obj.data, geo_type, dtype, is_local)
-    if is_local:
+    if is_local or geo_type == "normal":
         return local_vertices
     world_matrix = mat2np(obj.matrix_world)
     homo_vertices = np.ones((len(local_vertices), 4))
