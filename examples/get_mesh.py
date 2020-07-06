@@ -14,3 +14,5 @@ if __name__ == '__main__':
 
     vertices = bnp.io.load_geom("Cube")
     print(vertices)  # (vtx_num, 3)
+
+    bnp.scene.put_cubes(vertices)
