@@ -3,6 +3,8 @@ import re
 
 
 def remove_objects(prefix="debug"):
+    if bpy.context.view_layer.objects.active is None:
+        return
     bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
     bpy.ops.object.select_all(action="DESELECT")
     cnt = 0
