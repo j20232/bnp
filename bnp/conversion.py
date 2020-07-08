@@ -35,7 +35,7 @@ def obj2np(obj, geo_type="position", dtype=np.float32, is_local=False):
     return np.array([world_matrix @ v for v in homov], dtype=dtype)[:, 0:3]
 
 
-def mesh2np(mesh, geo_type="position", dtype=np.float32, is_local=False):
+def mesh2np(mesh, geo_type="position", dtype=np.float32):
     # Input: mesh(bpy.types.Mesh), Output: positions or normals
     if geo_type not in ["position", "normal"]:
         raise Exception("The type should  be position or normal.")
