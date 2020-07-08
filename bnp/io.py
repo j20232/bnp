@@ -1,8 +1,28 @@
 import bpy
+import os
 import numpy as np
 
-def import_geom():
-    pass
+def import_geom(filepath, keep_vertex_order=True, **kwargs):
+    ext = filepath.split(".")[-1]
+    if not os.path.exists(filepath):
+        print(f"WARNING: {filepath} doesn't exist!")
+        return
+    if ext == "obj":
+        split_mode = "OFF" if keep_vertex_order else "ON"
+        bpy.ops.import_scene.obj(filepath=filepath, split_mode=split_mode, **kwargs)
+    elif ext == "fbx":
+        bpy.ops.import_scene.fbx(filepath=filepath, **kwargs)
+    elif ext == "glb":
+        bpy.ops.import_scene.glb(filepath=filepath, **kwargs)
+    elif ext == "x3d":
+        bpy.ops.import_scene.x3d(filepath=filepath, **kwargs)
+    elif ext == "ply":
+        bpy.ops.import_mesh.ply(filepath=filepath, **kwargs)
+    elif ext == "stl":
+        bpy.ops.import_mesh.stl(filepath=filepath, **kwargs)
+    else:
+        raise Exception("Illegal extension")
+
 
 def export_geom(filepath, obj,
                 keep_vertex_order=True, use_selection=True, **kwargs):
@@ -17,6 +37,12 @@ def export_geom(filepath, obj,
         bpy.ops.export_scene.fbx(filepath=filepath, use_selection=use_selection, **kwargs)
     elif ext == "glb":
         bpy.ops.export_scene.gltf(filepath=filepath, **kwargs)
+    elif ext == "x3d":
+        bpy.ops.export_scene.x3d(filepath=filepath, **kwargs)
+    elif ext == "ply":
+        bpy.ops.export_mesh.ply(filepath=filepath, **kwargs)
+    elif ext == "stl":
+        bpy.ops.export_mesh.stl(filepath=filepath, **kwargs)
     else:
         raise Exception("Illegal extension")
     print(f"Exported {obj.name} to {filepath}")
