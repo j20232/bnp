@@ -3,7 +3,7 @@
 bnp documentation
 ===============================
 
-bnp is an utility library of blender with numpy.
+bnp is an numpy utility library for Blender.
 
 .. toctree::
    :glob:
