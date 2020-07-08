@@ -2,7 +2,7 @@ bnp.io
 =====================
 
 
-.. py:function:: export_geom(filepath, obj, keep_vertex_order=True, use_selection=True, **kwargs):
+.. py:function:: export_geom(filepath, obj, keep_vertex_order=True, use_selection=True, **kwargs)
 
     Export obj to filepath (Note: this function exports all objects in `glb` mode)
     
