@@ -5,9 +5,11 @@ bnp contains simple numpy utilities for Blender.
 
 You can easily read Blender's objects with numpy!
 
-## Installation
+Currently, work in progress.
 
-TBA
+## Documentation
+
+https://bnp.readthedocs.io/en/latest/
 
 ## Version
 
