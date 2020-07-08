@@ -10,8 +10,10 @@ def any2np(obj, dtype=np.float32, is_local=False):
         return mat2np(obj, dtype=dtype)
     elif type(obj) == bpy.types.Object:
         return obj2np(obj, dtype=dtype, is_local=is_local)
+    elif type(obj) == str:
+        return objname2np(obj, dtype=dtype, is_local=is_local)
     elif type(obj) == bpy.types.Mesh:
-        return mesh2np(obj, dtype=dtype, is_local=is_local)
+        return mesh2np(obj, dtype=dtype)
     else:
         raise NotImplementedError(f"{type(obj)} is not supported.")
 
@@ -26,13 +28,18 @@ def mat2np(mat, dtype=np.float32):
 
 def obj2np(obj, geo_type="position", dtype=np.float32, is_local=False):
     # Input: obj(bpy.types.Object), Output: positions or normals
-    local_verts = mesh2np(obj.data, geo_type, dtype, is_local)  # (vtx_num, 3)
+    local_verts = mesh2np(obj.data, geo_type, dtype)  # (vtx_num, 3)
     if is_local or geo_type == "normal":
         return local_verts  # (vtx_num, 3)
     world_matrix = mat2np(obj.matrix_world, dtype=dtype)  # (4, 4)
     homov = np.hstack((local_verts, np.ones(
         (len(local_verts), 1))))  # (vtx_num, 4)
     return np.array([world_matrix @ v for v in homov], dtype=dtype)[:, 0:3]
+
+
+def objname2np(obj_name, geo_type="position", dtype=np.float32, is_local=False):
+    obj = bpy.context.scene.objects[obj_name]
+    return obj2np(obj, geo_type=geo_type, dtype=dtype, is_local=is_local)
 
 
 def mesh2np(mesh, geo_type="position", dtype=np.float32):

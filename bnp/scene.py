@@ -3,9 +3,12 @@ import re
 
 
 def remove_objects(prefix="debug"):
+    cnt = 0
     for obj in bpy.context.scene.objects:
         obj.select_set(re.match(prefix, obj.name) is not None)
-    bpy.ops.object.delete()
+        cnt += 0
+    if cnt != 0:
+        bpy.ops.object.delete()
     clear_garbages()
 
 
@@ -32,6 +35,7 @@ def clear_garbages():
 
 def put_cubes(positions, prefix="debug", size=0.015, sampling_rate=1):
     # positions: (vtx_num, 3)
+    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
     for block in bpy.data.collections:
         if block.name == prefix:
             bpy.data.collections.remove(block)
@@ -43,4 +47,4 @@ def put_cubes(positions, prefix="debug", size=0.015, sampling_rate=1):
         bpy.ops.mesh.primitive_cube_add(size=size, location=(v[0], v[1], v[2]))
         bpy.context.object.name = f"debug_{str(idx)}"
         debug_collection.objects.link(bpy.context.object)
-        bpy.context.scene.collection.objects.unlink(bpy.context.object)
+        bpy.data.collections["Collection"].objects.unlink(bpy.context.object)

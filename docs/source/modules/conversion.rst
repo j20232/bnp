@@ -40,6 +40,17 @@ bnp.conversion
     :return: np.ndarray (vertex_number, 3)
 
 
+.. py:function:: objname2np(obj_name, geo_type="position", dtype=np.float32, is_local=False)
+
+    Get `bpy.types.Object` in the Scene which have a mesh and convert it to `np.ndarray`
+
+    :param str obj_name: object name
+    :param str geo_type: "position" or "normal"
+    :param dtype: dtype
+    :param bool is_local: return local positions if is_local else global positions
+    :return: np.ndarray (vertex_number, 3)
+
+
 .. py:function:: mesh2np(mesh, geo_type="position", dtype=np.float32, is_local=False)
 
     Convert a `bpy.types.Mesh` to  `np.ndarray`

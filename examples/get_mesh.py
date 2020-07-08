@@ -12,7 +12,7 @@ if __name__ == '__main__':
     importlib.reload(bnp)
     bnp.scene.remove_objects("debug")
 
-    vertices = bnp.io.load_geom("Cube")
+    vertices = bnp.conversion.objname2np("Cube")
     print(vertices)  # (vtx_num, 3)
 
     bnp.scene.put_cubes(vertices)
