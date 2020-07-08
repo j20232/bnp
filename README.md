@@ -11,7 +11,7 @@ Currently, work in progress. 🥺
 
 (work in the progress)
 
-1. Add pip to your BLender
+1. Add pip to your Bender
 2. Install `numpy` with the Blender's pip
 3. Copy `bnp/bnp` to `$YOUR_BLENDER_PATH/scripts/addons_contrib` manually
 
