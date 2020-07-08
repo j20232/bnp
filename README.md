@@ -11,7 +11,7 @@ Currently, work in progress. 🥺
 
 ```py
 import bnp
-vertices = bnp.io.load_geom("Cube")
+vertices = bnp.conversion.objname2np("Cube")
 print(vertices)  # (vtx_num, 3)
 bnp.scene.put_cubes(vertices)
 ```
