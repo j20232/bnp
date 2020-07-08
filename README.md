@@ -24,6 +24,15 @@ https://bnp.readthedocs.io/en/latest/
 
 Blender 2.83
 
-## 🐈 Authoer
+## ⚠️ LICENSE
+
+GPL-3.0 (based on Blender)
+
+If bnp violates any licenses, I'll delete this repository immediately.  
+Please let me know if there're problems.
+
+## 🐈 Author
 
 mocobt
+
+mocobt@gmail.com
