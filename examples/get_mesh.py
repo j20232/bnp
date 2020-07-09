@@ -13,14 +13,24 @@ if __name__ == '__main__':
     importlib.reload(bnp)
     bnp.scene.remove_objects("debug")
 
-    vertices = bnp.conversion.objname2np("Cube")
-    print(vertices)  # (vtx_num, 3)
+    obj = bpy.context.scene.objects["Cube"]
+
+    vertices = bnp.conversion.obj2np(obj)
+    print("Vertex positions: ", vertices)  # (vtx_num, 3)
+
+    location = bnp.conversion.get_location_as_np(obj)
+    print("Location: ", location)
+
+    rotation = bnp.conversion.get_rotation_as_np(obj)
+    print("Rotation: ", rotation)
+
+    scale = bnp.conversion.get_scale_as_np(obj)
+    print("Scale: ", scale)
 
     bnp.scene.put_cubes(vertices)
-    
-    obj = bpy.context.scene.objects["Cube"]
-    cone = bpy.context.scene.objects["Cone"]
+
+    """
     bnp.io.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.obj"), obj)
     bnp.io.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.fbx"), obj)
     bnp.io.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.glb"), obj)
-    
+    """
