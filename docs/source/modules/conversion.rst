@@ -1,9 +1,7 @@
 bnp.conversion
 =====================
 
-.. py:function:: any2np(obj, dtype=np.float32, is_local=False,
-                        frame=bpy.context.scene.frame_current, change_frame=True,
-                        as_homogeneous=False)
+.. py:function:: any2np(obj, dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
 
     Convert any objects in Blender to `np.ndarray` at current frame
 
@@ -34,9 +32,7 @@ bnp.conversion
     :return: `np.ndarray`
 
 
-.. py:function:: obj2np(obj, geo_type="position", dtype=np.float32, is_local=False,
-                        frame=bpy.context.scene.frame_current, change_frame=True,
-                        as_homogeneous=False)
+.. py:function:: obj2np(obj, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
 
     Convert a `bpy.types.Object` which have a mesh to `np.ndarray` at current frame
 
@@ -50,9 +46,7 @@ bnp.conversion
     :return: `np.ndarray` (vertex_number, 3)
 
 
-.. py:function:: objname2np(obj_name, geo_type="position", dtype=np.float32, is_local=False,
-                            frame=bpy.context.scene.frame_current, change_frame=True,
-                            as_homogeneous=False)
+.. py:function:: objname2np(obj_name, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
 
     Get `bpy.types.Object` in the Scene which have a mesh and convert it to `np.ndarray` at current frame
 
@@ -66,9 +60,7 @@ bnp.conversion
     :return: `np.ndarray` (vertex_number, 3)
 
 
-.. py:function:: mesh2np(mesh, geo_type="position", dtype=np.float32, is_local=False,
-                         as_homogeneous=False)
-
+.. py:function:: mesh2np(mesh, geo_type="position", dtype=np.float32, is_local=False, as_homogeneous=False)
 
     Convert a `bpy.types.Mesh` to  `np.ndarray` at current frame
 
@@ -79,8 +71,7 @@ bnp.conversion
     :return: `np.ndarray` (vertex_number, 3)
 
 
-.. py:function:: get_world_matrix_as_np(obj, dtype=np.float32,
-                                        frame=bpy.context.scene.frame_current, change_frame=True)
+.. py:function:: get_world_matrix_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
 
     Get world matrix of `bpy.types.Object` as `np.ndarray` (row major)
 
@@ -91,8 +82,7 @@ bnp.conversion
     :return: `np.ndarray` (worldmatrix; row major)
 
 
-.. py:function:: get_location_as_np(obj, dtype=np.float32,
-                                    frame=bpy.context.scene.frame_current, change_frame=True)
+.. py:function:: get_location_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
 
     Get location of `bpy.types.Object` as `np.ndarray`
 
@@ -103,8 +93,7 @@ bnp.conversion
     :return: `np.ndarray` (location)
 
 
-.. py:function:: get_rotation_as_np(obj, dtype=np.float32, mode="DEFAULT",
-                                    frame=bpy.context.scene.frame_current, change_frame=True)
+.. py:function:: get_rotation_as_np(obj, dtype=np.float32, mode="DEFAULT", frame=bpy.context.scene.frame_current, change_frame=True)
 
     Get rotation of `bpy.types.Object` as `np.ndarray`
 
@@ -116,8 +105,7 @@ bnp.conversion
     :return: `np.ndarray` (rotation)
 
 
-.. py:function:: get_scale_as_np(obj, dtype=np.float32,
-                                 frame=bpy.context.scene.frame_current, change_frame=True)
+.. py:function:: get_scale_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
 
     Get scale of `bpy.types.Object` as `np.ndarray`
 
