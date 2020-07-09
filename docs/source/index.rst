@@ -5,6 +5,8 @@ bnp documentation
 
 bnp is a numpy utility library for Blender.
 
+All matrices are **Row major**.
+
 .. toctree::
    :glob:
    :maxdepth: 1

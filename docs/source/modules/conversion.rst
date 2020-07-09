@@ -119,7 +119,7 @@ bnp.conversion
 
 .. py:function:: get_posebone_as_np(posebone, dtype=np.float32, mode="dynamic", frame=bpy.context.scene.frame_current)
 
-    Get posebone as `np.ndarray`
+    Get posebone as `np.ndarray`.
 
     :param bpy.types.PoseBone posebone: posebone
     :param dtype: dtype
@@ -130,7 +130,7 @@ bnp.conversion
 
 .. py:function:: get_bone_as_np(bone, dtype=np.float32, mode="rest", frame=bpy.context.scene.frame_current)
 
-    Get bone as `np.ndarray`
+    Get bone as `np.ndarray`.
 
     :param bpy.types.Bone bone: bone
     :param dtype: dtype
