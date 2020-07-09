@@ -17,7 +17,7 @@ bnp.conversion
 
     :param vec: vector
     :param dtype: dtype
-    :return: `np.ndarray`
+    :return: `np.ndarray` (vector_size)
 
 
 .. py:function:: mat2np(mat, dtype=np.float32)
@@ -26,18 +26,18 @@ bnp.conversion
 
     :param vec: matrix
     :param dtype: dtype
-    :return: `np.ndarray` (row major)
+    :return: Row-major `np.ndarray` (matrix_size)
 
 
 .. py:function:: obj2np(obj, dtype=np.float32, **kwargs)
 
     Convert a `bpy.types.Object` which have a mesh to `np.ndarray` at current frame.
-    If obj.data == bpy.types.Mesh, this method calls `mesh2np`.
+    If obj.data == bpy.types.Mesh, this method calls `mesh2np` or `armature2np`.
 
     :param bpy.types.Object obj: object which have a mesh
     :param dtype: dtype
     :param kwargs: other attrs
-    :return: `np.ndarray` (vertex_number, 3) or (vertex_number, 4)
+    :return: `np.ndarray`
 
 
 .. py:function:: objname2np(obj_name, dtype=np.float32, **kwargs)
@@ -48,7 +48,7 @@ bnp.conversion
     :param str obj_name: object name
     :param dtype: dtype
     :param kwargs: other attrs
-    :return: `np.ndarray` (vertex_number, 3) or (vertex_number, 4)
+    :return: `np.ndarray`
 
 
 .. py:function:: mesh2np(mesh, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
@@ -61,7 +61,7 @@ bnp.conversion
     :param bool is_local: return local positions if is_local else global positions
     :param int frame: frame when you want to read (default: current frame)
     :param bool as_homogeneous: whether to return vertices as homogeneous coordinates or not
-    :return: `np.ndarray` (vertex_number, 3)
+    :return: `np.ndarray` (vertex_number, 3) or (vertex_number, 4)
 
 
 
