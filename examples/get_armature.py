@@ -13,6 +13,18 @@ if __name__ == '__main__':
     importlib.reload(bnp)
     bnp.scene.remove_objects("debug")
 
-    armature = bpy.context.scene.objects["Armature"]
-    joints = bnp.conversion.armature2np(armature)
-    print(joints)  # (vtx_num, 3)
+    amt = bpy.context.scene.objects["Armature"]
+    head_positions = bnp.conversion.armature2np(amt, mode="head")
+    print("Head positions: ", head_positions)  # (joint_num, 3)
+
+    tail_positions = bnp.conversion.armature2np(amt, mode="tail")
+    print("Tail positions: ", tail_positions)  # (joint_num, 3)
+
+    bone_lengths = bnp.conversion.armature2np(amt, mode="length")
+    print("Bone lengths: ", bone_lengths)  # (joint_num,)
+
+    rest_pose = bnp.conversion.armature2np(amt, mode="restpose")
+    print("Rest pose: ", rest_pose)  # (joint_num, 4, 4)
+
+    dynamic_pose = bnp.conversion.armature2np(amt, mode="dynamic")
+    print("Dynamic pose: ", dynamic_pose)  # (joint_num, 4, 4)

@@ -43,7 +43,7 @@ bnp.conversion
 .. py:function:: objname2np(obj_name, dtype=np.float32, **kwargs)
 
     Get `bpy.types.Object` in the Scene which have a mesh and convert it to `np.ndarray` at current frame.
-    This method calls `obj2np`
+    This method calls `obj2np`.
 
     :param str obj_name: object name
     :param dtype: dtype
@@ -60,9 +60,20 @@ bnp.conversion
     :param dtype: dtype
     :param bool is_local: return local positions if is_local else global positions
     :param int frame: frame when you want to read (default: current frame)
-    :param bool change_frame: whether to keep the frame after getting the array
     :param bool as_homogeneous: whether to return vertices as homogeneous coordinates or not
     :return: `np.ndarray` (vertex_number, 3)
+
+
+
+.. py:function:: armature2np(armature, dtype=np.float32, mode="dynamic", frame=bpy.context.scene.frame_current)
+
+    Convert a `bpy.types.Armature` to `np.ndarray` at current frame.
+
+    :param bpy.types.Armature armature: armature
+    :param dtype: dtype
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "rest" or "dynamic": transform matrices relative to each parent at rest pose / at the specified frame (`joint_num`, 4, 4)
+    :param int frame: frame when you want to read (default: current frame)
+    :return: `np.ndarray`
 
 
 .. py:function:: get_world_matrix_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
@@ -72,7 +83,6 @@ bnp.conversion
     :param bpy.types.Object obj: object
     :param dtype: dtype
     :param int frame: frame when you want to read (default: current frame)
-    :param bool change_frame: whether to keep the frame after getting the array
     :return: `np.ndarray` (worldmatrix; row major)
 
 
@@ -83,7 +93,6 @@ bnp.conversion
     :param bpy.types.Object obj: object
     :param dtype: dtype
     :param int frame: frame when you want to read (default: current frame)
-    :param bool change_frame: whether to keep the frame after getting the array
     :return: `np.ndarray` (location)
 
 
@@ -95,7 +104,6 @@ bnp.conversion
     :param dtype: dtype
     :param str mode: "DEFAULT" (current rotation mode), "QUATERNION", "AXIS_ANGLE", others(rotation_euler)
     :param int frame: frame when you want to read (default: current frame)
-    :param bool change_frame: whether to keep the frame after getting the array
     :return: `np.ndarray` (rotation)
 
 
@@ -106,5 +114,26 @@ bnp.conversion
     :param bpy.types.Object obj: object
     :param dtype: dtype
     :param int frame: frame when you want to read (default: current frame)
-    :param bool change_frame: whether to keep the frame after getting the array
     :return: `np.ndarray` (scale)
+
+
+.. py:function:: get_posebone_as_np(posebone, dtype=np.float32, mode="dynamic", frame=bpy.context.scene.frame_current)
+
+    Get posebone as `np.ndarray`
+
+    :param bpy.types.PoseBone posebone: posebone
+    :param dtype: dtype
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,),"dynamic": transform matrices relative to each parent at the specified frame (`joint_num`, 4, 4)
+    :param int frame: frame when you want to read (default: current frame)
+    :return: `np.ndarray`
+
+
+.. py:function:: get_bone_as_np(bone, dtype=np.float32, mode="rest", frame=bpy.context.scene.frame_current)
+
+    Get bone as `np.ndarray`
+
+    :param bpy.types.Bone bone: bone
+    :param dtype: dtype
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,),"rest": transform matrices relative to each parent at rest pose (`joint_num`, 4, 4)
+    :param int frame: frame when you want to read (default: current frame)
+    :return: `np.ndarray`
