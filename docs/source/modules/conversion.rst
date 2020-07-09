@@ -1,16 +1,13 @@
 bnp.conversion
 =====================
 
-.. py:function:: any2np(obj, dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
+.. py:function:: any2np(obj, dtype=np.float32, **kwargs)
 
     Convert any objects in Blender to `np.ndarray` at current frame
 
     :param obj: any object such as `mathutils.Vector`, `mathutils.Matrix`, and so on
     :param dtype: dtype
-    :param bool is_local: return local positions if is_local else global positions
-    :param int frame: frame when you want to read (default: current frame)
-    :param bool change_frame: whether to keep the frame after getting the array
-    :param bool as_homogeneous: whether to return vertices as homogeneous coordinates or not
+    :param kwargs: other attrs
     :return: `np.ndarray`
 
 
@@ -32,41 +29,38 @@ bnp.conversion
     :return: `np.ndarray` (row major)
 
 
-.. py:function:: obj2np(obj, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
+.. py:function:: obj2np(obj, dtype=np.float32, **kwargs)
 
     Convert a `bpy.types.Object` which have a mesh to `np.ndarray` at current frame
+    If obj.data == bpy.types.Mesh, this method calls `mesh2np`.
 
     :param bpy.types.Object obj: object which have a mesh
-    :param str geo_type: "position" or "normal"
     :param dtype: dtype
-    :param bool is_local: return local positions if is_local else global positions
-    :param int frame: frame when you want to read (default: current frame)
-    :param bool change_frame: whether to keep the frame after getting the array
-    :param bool as_homogeneous: whether to return vertices as homogeneous coordinates or not
-    :return: `np.ndarray` (vertex_number, 3)
+    :param kwargs: other attrs
+    :return: `np.ndarray` (vertex_number, 3) or (vertex_number, 4)
 
 
-.. py:function:: objname2np(obj_name, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
+.. py:function:: objname2np(obj_name, dtype=np.float32, **kwargs)
 
     Get `bpy.types.Object` in the Scene which have a mesh and convert it to `np.ndarray` at current frame
+    This method calls `obj2np`
 
     :param str obj_name: object name
-    :param str geo_type: "position" or "normal"
     :param dtype: dtype
-    :param bool is_local: return local positions if is_local else global positions
-    :param int frame: frame when you want to read (default: current frame)
-    :param bool change_frame: whether to keep the frame after getting the array
-    :param bool as_homogeneous: whether to return vertices as homogeneous coordinates or not
-    :return: `np.ndarray` (vertex_number, 3)
+    :param kwargs: other attrs
+    :return: `np.ndarray` (vertex_number, 3) or (vertex_number, 4)
 
 
-.. py:function:: mesh2np(mesh, geo_type="position", dtype=np.float32, is_local=False, as_homogeneous=False)
+.. py:function:: mesh2np(mesh, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
 
     Convert a `bpy.types.Mesh` to  `np.ndarray` at current frame
 
     :param bpy.types.Mesh mesh: input mesh
     :param str geo_type: "position" or "normal"
     :param dtype: dtype
+    :param bool is_local: return local positions if is_local else global positions
+    :param int frame: frame when you want to read (default: current frame)
+    :param bool change_frame: whether to keep the frame after getting the array
     :param bool as_homogeneous: whether to return vertices as homogeneous coordinates or not
     :return: `np.ndarray` (vertex_number, 3)
 

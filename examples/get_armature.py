@@ -13,6 +13,6 @@ if __name__ == '__main__':
     importlib.reload(bnp)
     bnp.scene.remove_objects("debug")
 
-    armature = ...
-    joints = bpy.conversion.armature2np()
+    armature = bpy.context.scene.objects["Armature"]
+    joints = bnp.conversion.armature2np(armature)
     print(joints)  # (vtx_num, 3)

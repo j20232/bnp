@@ -3,21 +3,19 @@ import mathutils
 import numpy as np
 
 
-def any2np(obj, dtype=np.float32, is_local=False,
-           frame=bpy.context.scene.frame_current, change_frame=True,
-           as_homogeneous=False):
+def any2np(obj, dtype=np.float32, **kwargs):
     if type(obj) == mathutils.Vector:
         return vec2np(obj, dtype=dtype)
     if type(obj) == mathutils.Matrix:
         return mat2np(obj, dtype=dtype)
     elif type(obj) == bpy.types.Object:
-        return obj2np(obj, dtype=dtype, is_local=is_local, frame=frame, change_frame=change_frame)
+        return obj2np(obj, dtype=dtype, **kwargs)
     elif type(obj) == str:
-        return objname2np(obj, dtype=dtype, is_local=is_local, frame=frame, change_frame=change_frame)
+        return objname2np(obj, dtype=dtype, **kwargs)
     elif type(obj) == bpy.types.Mesh:
         return mesh2np(obj, dtype=dtype)
     else:
-        raise NotImplementedError(f"{type(obj)} is not supported.")
+        raise NotImplementedError(f"{type(obj)} is not supported with any2np.")
 
 
 def vec2np(vec, dtype=np.float32):
@@ -28,39 +26,46 @@ def mat2np(mat, dtype=np.float32):
     return np.array([vec2np(mat[rid]) for rid in range(len(mat.row))], dtype=dtype)
 
 
-def obj2np(obj, geo_type="position", dtype=np.float32, is_local=False,
-           frame=bpy.context.scene.frame_current, change_frame=True,
-           as_homogeneous=False):
+def obj2np(obj, dtype=np.float32, **kwargs):
     # Input: obj(bpy.types.Object), Output: positions or normals
-    current_time = bpy.context.scene.frame_current
-    bpy.context.scene.frame_set(frame)
-    local_verts = mesh2np(obj.data, geo_type, dtype, True)  # (vtx_num, 4)
-    world_matrix = get_world_matrix_as_np(obj, dtype=dtype)  # (4, 4)
-    if not change_frame:
-        bpy.context.scene.frame_set(current_time)
-    if is_local or geo_type == "normal":
-        return local_verts[:, 0:3]  # (vtx_num, 3)
-    vertices = np.array([world_matrix @ v for v in local_verts], dtype=dtype)
-    return vertices if as_homogeneous else vertices[:, 0:3]
+    if type(obj.data) == bpy.types.Mesh:
+        world_matrix = get_world_matrix_as_np(obj, dtype=dtype)  # (4, 4)
+        return mesh2np(obj.data, world_matrix=world_matrix, **kwargs)
+    else:
+        raise NotImplementedError(
+            f"{type(obj.data)} is not supported with obj2np")
 
 
-def objname2np(obj_name, geo_type="position", dtype=np.float32, is_local=False,
-               frame=bpy.context.scene.frame_current, change_frame=True,
-               as_homogeneous=False):
-    obj = bpy.context.scene.objects[obj_name]
-    return obj2np(obj, geo_type=geo_type, dtype=dtype, is_local=is_local,
-                  frame=frame, change_frame=change_frame, as_homogeneous=as_homogeneous)
+def objname2np(obj_name, dtype=np.float32, **kwargs):
+    return obj2np(bpy.context.scene.objects[obj_name], dtype=dtype, **kwargs)
 
 
-def mesh2np(mesh, geo_type="position", dtype=np.float32,
+def mesh2np(mesh, world_matrix=None,
+            geo_type="position", dtype=np.float32, is_local=False,
+            frame=bpy.context.scene.frame_current, change_frame=True,
             as_homogeneous=False):
     # Input: mesh(bpy.types.Mesh), Output: positions or normals
+    current_time = bpy.context.scene.frame_current
+    bpy.context.scene.frame_set(frame)
     if geo_type not in ["position", "normal"]:
         raise Exception("The type should  be position or normal.")
-    vertices = np.array([
+    local_verts = np.array([
         vec2np(v.co if geo_type == "position" else v.normal)
         for v in mesh.vertices], dtype=dtype)  # (vtx_num, 3)
-    return np.hstack((vertices, np.ones((len(vertices), 1)))) if as_homogeneous else vertices
+    local_verts = np.hstack((local_verts, np.ones(
+        (len(local_verts), 1)))) if as_homogeneous or world_matrix is not None else local_verts
+    if not change_frame:
+        bpy.context.scene.frame_set(current_time)
+    if is_local or geo_type == "normal" or world_matrix is None:
+        return local_verts if as_homogeneous else local_verts[:, 0:3]
+    global_verts = np.array(
+        [world_matrix @ v for v in local_verts], dtype=dtype)
+    return global_verts if as_homogeneous else global_verts[:, 0:3]
+
+
+def armature2np(armature, dtype=np.float32):
+    print(armature)
+    assert False
 
 
 def get_world_matrix_as_np(obj, dtype=np.float32,
