@@ -3,7 +3,7 @@ bnp.conversion
 
 .. py:function:: any2np(obj, dtype=np.float32, **kwargs)
 
-    Convert any objects in Blender to `np.ndarray` at current frame
+    Convert any objects in Blender to `np.ndarray` at current frame.
 
     :param obj: any object such as `mathutils.Vector`, `mathutils.Matrix`, and so on
     :param dtype: dtype
@@ -13,7 +13,7 @@ bnp.conversion
 
 .. py:function:: vec2np(vec, dtype=np.float32)
 
-    Convert a vector such as `mathutils.Vector` to `np.ndarray`
+    Convert a vector such as `mathutils.Vector` to `np.ndarray`.
 
     :param vec: vector
     :param dtype: dtype
@@ -22,7 +22,7 @@ bnp.conversion
 
 .. py:function:: mat2np(mat, dtype=np.float32)
 
-    Convert a matrix such as `mathutils.Matrix` to `np.ndarray`
+    Convert a matrix such as `mathutils.Matrix` to `np.ndarray`.
 
     :param vec: matrix
     :param dtype: dtype
@@ -31,7 +31,7 @@ bnp.conversion
 
 .. py:function:: obj2np(obj, dtype=np.float32, **kwargs)
 
-    Convert a `bpy.types.Object` which have a mesh to `np.ndarray` at current frame
+    Convert a `bpy.types.Object` which have a mesh to `np.ndarray` at current frame.
     If obj.data == bpy.types.Mesh, this method calls `mesh2np`.
 
     :param bpy.types.Object obj: object which have a mesh
@@ -42,7 +42,7 @@ bnp.conversion
 
 .. py:function:: objname2np(obj_name, dtype=np.float32, **kwargs)
 
-    Get `bpy.types.Object` in the Scene which have a mesh and convert it to `np.ndarray` at current frame
+    Get `bpy.types.Object` in the Scene which have a mesh and convert it to `np.ndarray` at current frame.
     This method calls `obj2np`
 
     :param str obj_name: object name
@@ -53,7 +53,7 @@ bnp.conversion
 
 .. py:function:: mesh2np(mesh, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
 
-    Convert a `bpy.types.Mesh` to  `np.ndarray` at current frame
+    Convert a `bpy.types.Mesh` to  `np.ndarray` at current frame.
 
     :param bpy.types.Mesh mesh: input mesh
     :param str geo_type: "position" or "normal"
@@ -67,7 +67,7 @@ bnp.conversion
 
 .. py:function:: get_world_matrix_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
 
-    Get world matrix of `bpy.types.Object` as `np.ndarray` (row major)
+    Get world matrix of `bpy.types.Object` as `np.ndarray` (row major).
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
@@ -78,7 +78,7 @@ bnp.conversion
 
 .. py:function:: get_location_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
 
-    Get location of `bpy.types.Object` as `np.ndarray`
+    Get location of `bpy.types.Object` as `np.ndarray`.
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
@@ -89,7 +89,7 @@ bnp.conversion
 
 .. py:function:: get_rotation_as_np(obj, dtype=np.float32, mode="DEFAULT", frame=bpy.context.scene.frame_current, change_frame=True)
 
-    Get rotation of `bpy.types.Object` as `np.ndarray`
+    Get rotation of `bpy.types.Object` as `np.ndarray`.
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
@@ -101,7 +101,7 @@ bnp.conversion
 
 .. py:function:: get_scale_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
 
-    Get scale of `bpy.types.Object` as `np.ndarray`
+    Get scale of `bpy.types.Object` as `np.ndarray`.
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
