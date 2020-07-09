@@ -29,7 +29,7 @@ bnp.conversion
 
     :param vec: matrix
     :param dtype: dtype
-    :return: `np.ndarray`
+    :return: `np.ndarray` (row major)
 
 
 .. py:function:: obj2np(obj, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
