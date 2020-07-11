@@ -23,8 +23,8 @@ if __name__ == '__main__':
     bone_lengths = bnp.conversion.armature2np(amt, mode="length")
     print("Bone lengths: ", bone_lengths)  # (joint_num,)
 
-    rest_pose = bnp.conversion.armature2np(amt, mode="restpose")
-    print("Rest pose: ", rest_pose)  # (joint_num, 4, 4)
+    rest_pose = bnp.conversion.armature2np(amt, mode="rest_from_origin")
+    print("Rest pose: ", rest_pose)  # (joint_num, 4, 4) considering bones' rotation at rest pose
 
-    dynamic_pose = bnp.conversion.armature2np(amt, mode="dynamic")
-    print("Dynamic pose: ", dynamic_pose)  # (joint_num, 4, 4)
+    dynamic_pose = bnp.conversion.armature2np(amt, mode="dynamic_from_origin")
+    print("Dynamic pose: ", dynamic_pose)  # (joint_num, 4, 4) considering bones' rotation at rest pose

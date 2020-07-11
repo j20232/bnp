@@ -70,10 +70,10 @@ def mesh2np(mesh: bpy.types.Mesh, world_matrix=None,
 
 def armature2np(armature: bpy.types.Armature, dtype=np.float32, mode="dynamic",
                 frame=bpy.context.scene.frame_current):
-    if mode in ["head", "tail", "length", "rest"]:
+    if mode in ["head", "tail", "length", "rest_from_origin", "rest"]:
         return np.array([get_bone_as_np(
             p.bone, dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
-    elif mode == "dynamic":
+    elif mode == "dynamic" or mode == "dynamic_from_origin":
         return np.array([get_posebone_as_np(
             p, dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
     else:
@@ -138,7 +138,7 @@ def get_posebone_as_np(posebone, dtype=np.float32, mode="dynamic",
         return vec2np(posebone.tail, dtype=dtype)
     elif mode == "length":  # bone length
         return posebone.length
-    elif mode == "dynamic":
+    elif mode == "dynamic_from_origin":
         # translation matrix relative to the parent (at frame)
         return mat2np(posebone.matrix, dtype=dtype)
     else:
@@ -155,7 +155,7 @@ def get_bone_as_np(bone, dtype=np.float32, mode="rest",
         return vec2np(bone.tail_local, dtype=dtype)
     elif mode == "length":  # bone length
         return bone.length
-    elif mode == "rest":
+    elif mode == "rest_from_origin":
         # translation matrix relative to the parent (restpose)
         return mat2np(bone.matrix_local, dtype=dtype)
     else:

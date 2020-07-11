@@ -1,4 +1,5 @@
 # 🐣 bnp: Blender numpy utilities
+
 ## ✌ About
 
 bnp contains simple numpy utilities for Blender.
@@ -20,7 +21,7 @@ e.g. `$YOUR_BLENDER_PATH`: `C:/Program Files/Blender Foundation/Blender 2.83/2.8
 - OK: C:/Program Files/Blender Foundation/Blender 2.83/2.83/scripts/addons_contrib/bnp/__init__.py
 - NG: C:/Program Files/Blender Foundation/Blender 2.83/2.83/scripts/addons_contrib/bnp/bnp/__init__.py
 
-##  🎲 Tiny example
+## 🎲 Tiny example
 
 ```py
 import bnp
