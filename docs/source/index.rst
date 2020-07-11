@@ -21,6 +21,7 @@ All matrices are **Row major**.
 
    modules/conversion
    modules/io
+   modules/mathfunc
    modules/scene
 
 Indices and Tables

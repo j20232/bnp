@@ -82,7 +82,7 @@ def armature2np(armature: bpy.types.Armature, dtype=np.float32, mode="dynamic",
 
 def get_world_matrix_as_np(obj: bpy.types.Object, dtype=np.float32, frame=bpy.context.scene.frame_current):
     bpy.context.scene.frame_set(frame)
-    return mat2np(obj.matrix_world, dtype=dtype)  # (4, 4)
+    return get_location_as_np(obj, dtype, True, frame) @ get_rotation_as_np(obj, dtype, True, frame) @ get_scale_as_np(obj, dtype, True, frame)
 
 
 def get_location_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
@@ -91,13 +91,8 @@ def get_location_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
     location = vec2np(obj.location, dtype=dtype)
     if not to_matrix:
         return location  # (3)
-    """
-    # equal to decomposition of obj.matrix_world
-    loc, rot, scale = obj.matrix_world.decompose()
-    mat = mat2np(Matrix.Translation(loc))
-    """
     mat = np.eye(4, dtype=dtype)
-    mat[0:3, 0:3] = np.diag(location)
+    mat[0:3, 3] = location
     return mat  # (4, 4)
 
 
@@ -112,18 +107,14 @@ def get_rotation_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
         rot = vec2np(obj.rotation_euler, dtype=dtype)  # (3)
     if not to_matrix:
         return rot
-    """
-    # equal to decomposition of obj.matrix_world
-    loc, rot, scale = obj.matrix_world.decompose()  # rot is quaternion
-    mat = mat2np(rot.to_matrix().to_4x4())
-    """
+    # rot = np.ones((2, 4), dtype=dtype)
     if obj.rotation_mode == "QUATERNION":
         mat = bnp.mathfunc.quaternion2R(rot, dtype=dtype)
     elif obj.rotation_mode == "AXIS_ANGLE":
         mat = bnp.mathfunc.axis_angle2R(rot, dtype=dtype)
     else:
         mat = bnp.mathfunc.euler2R(rot, obj.rotation_mode, dtype=dtype)
-    return mat
+    return mat[0]
 
 
 def get_scale_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
@@ -132,12 +123,6 @@ def get_scale_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
     scale = vec2np(obj.scale)  # (3)
     if not to_matrix:
         return scale
-    """
-    # equal to decomposition of obj.matrix_world
-    loc, rot, scale = obj.matrix_world.decompose()
-    mat = Matrix.Scale(scale[0], 4, (1, 0, 0)) @ Matrix.Scale(
-        scale[1], 4, (0, 1, 0)) @ Matrix.Scale(scale[2], 4, (0, 0, 1))
-    """
     mat = np.eye(4, dtype=dtype)
     mat[0:3, 0:3] = np.diag(scale)
     return mat

@@ -29,7 +29,7 @@ bnp.conversion
     :return: Row-major `np.ndarray` (matrix_size)
 
 
-.. py:function:: obj2np(obj, dtype=np.float32, **kwargs)
+.. py:function:: obj2np(obj: bpy.types.Object, dtype=np.float32, **kwargs)
 
     Convert a `bpy.types.Object` which have a mesh to `np.ndarray` at current frame.
     If obj.data == bpy.types.Mesh, this method calls `mesh2np` or `armature2np`.
@@ -40,22 +40,23 @@ bnp.conversion
     :return: `np.ndarray`
 
 
-.. py:function:: objname2np(obj_name, dtype=np.float32, **kwargs)
+.. py:function:: objname2np(obj_name: str, dtype=np.float32, **kwargs)
 
     Get `bpy.types.Object` in the Scene which have a mesh and convert it to `np.ndarray` at current frame.
     This method calls `obj2np`.
 
-    :param str obj_name: object name
+    :param str obj_name: object name in the Scene
     :param dtype: dtype
     :param kwargs: other attrs
     :return: `np.ndarray`
 
 
-.. py:function:: mesh2np(mesh, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, change_frame=True, as_homogeneous=False)
+.. py:function:: mesh2np(mesh: bpy.types.Mesh, world_matrix=None, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, as_homogeneous=False)
 
     Convert a `bpy.types.Mesh` to  `np.ndarray` at current frame.
 
     :param bpy.types.Mesh mesh: input mesh
+    :param np.ndarray world_matrix: world matrix (equal to model matrix)
     :param str geo_type: "position" or "normal"
     :param dtype: dtype
     :param bool is_local: return local positions if is_local else global positions
@@ -78,7 +79,7 @@ bnp.conversion
 
 .. py:function:: get_world_matrix_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
 
-    Get world matrix of `bpy.types.Object` as `np.ndarray` (row major).
+    Get world matrix of `bpy.types.Object` as `np.ndarray` (row major). This function is equal to `mat2np(obj.matrix_world)`.
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
@@ -86,35 +87,37 @@ bnp.conversion
     :return: `np.ndarray` (worldmatrix; row major)
 
 
-.. py:function:: get_location_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
+.. py:function:: get_location_as_np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current)
 
     Get location of `bpy.types.Object` as `np.ndarray`.
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
+    :param bool to_matrix: whether to convert a location vector to a transformation matrix
     :param int frame: frame when you want to read (default: current frame)
-    :return: `np.ndarray` (location)
+    :return: `np.ndarray`  (4, 4) if to_matrix else (3)
 
 
-.. py:function:: get_rotation_as_np(obj, dtype=np.float32, mode="DEFAULT", frame=bpy.context.scene.frame_current, change_frame=True)
+.. py:function:: get_rotation_as_np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current)
 
     Get rotation of `bpy.types.Object` as `np.ndarray`.
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
-    :param str mode: "DEFAULT" (current rotation mode), "QUATERNION", "AXIS_ANGLE", others(rotation_euler)
+    :param bool to_matrix: whether to convert a rotation vector to a transformation matrix
     :param int frame: frame when you want to read (default: current frame)
-    :return: `np.ndarray` (rotation)
+    :return: `np.ndarray` (4, 4) if to_matrix else {(3) (euler angle) or (4) (quaternion or axis angle)}
 
 
-.. py:function:: get_scale_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current, change_frame=True)
+.. py:function:: get_scale_as_np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current)
 
     Get scale of `bpy.types.Object` as `np.ndarray`.
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
+    :param bool to_matrix: whether to convert a scale vector to a transformation matrix
     :param int frame: frame when you want to read (default: current frame)
-    :return: `np.ndarray` (scale)
+    :return: `np.ndarray` (4, 4) if to_matrix else (3)
 
 
 .. py:function:: get_posebone_as_np(posebone, dtype=np.float32, mode="dynamic", frame=bpy.context.scene.frame_current)
