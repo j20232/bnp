@@ -140,7 +140,10 @@ def get_posebone_as_np(posebone, dtype=np.float32, mode="dynamic",
         return posebone.length
     elif mode == "dynamic_from_origin":
         # translation matrix relative to the parent (at frame)
+        # considering bones' rotation at rest pose
         return mat2np(posebone.matrix, dtype=dtype)
+    elif mode == "dynamic":
+        return 0
     else:
         raise NotImplementedError(f"mode {mode} isn't supported.")
 
@@ -157,6 +160,9 @@ def get_bone_as_np(bone, dtype=np.float32, mode="rest",
         return bone.length
     elif mode == "rest_from_origin":
         # translation matrix relative to the parent (restpose)
+        # considering bones' rotation at rest pose
         return mat2np(bone.matrix_local, dtype=dtype)
+    elif mode == "rest":
+        return 0
     else:
         raise NotImplementedError(f"mode {mode} isn't supported.")
