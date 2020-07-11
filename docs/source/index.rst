@@ -7,7 +7,7 @@ bnp is a numpy utility library for Blender.
 
 All matrices are **Row major**.
 
-The repository is [here](https://github.com/j20232/bnp).
+The repository is at https://github.com/j20232/bnp.
 
 .. toctree::
    :glob:
