@@ -35,7 +35,7 @@ You can find more examples at https://github.com/j20232/bnp/tree/master/examples
 To check examples, please open `*.blend`([sample scenes](https://github.com/j20232/bnp/tree/master/samples)) files in **your file browser**.  
 Don't open `*.blend` files from `Blender.exe` because this library doesn't work due to the permission.
 
-## Features
+## 🗄 Features
 
 - [x] Get translation matrices of `bpy.types.Object` and `bpy.types.Armature` as np.ndarray
 - [x] Get vertex positions of `bpy.types.Mesh` as np.ndarray
