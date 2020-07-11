@@ -1,4 +1,5 @@
 import bpy
+from bpy.types import Depsgraph
 from mathutils import Vector, Matrix
 import bnp.mathfunc
 import numpy as np
@@ -27,9 +28,16 @@ def mat2np(mat, dtype=np.float32) -> np.ndarray:
     return np.array([vec2np(mat[rid]) for rid in range(len(mat.row))], dtype=dtype)
 
 
-def obj2np(obj: bpy.types.Object, dtype=np.float32, **kwargs) -> np.ndarray:
+def obj2np(obj: bpy.types.Object, dtype=np.float32, apply_modifier=False,
+           frame=bpy.context.scene.frame_current, **kwargs) -> np.ndarray:
     # Input: obj(bpy.types.Object), Output: positions or normals
-    if type(obj.data) == bpy.types.Mesh:
+    bpy.context.scene.frame_set(frame)
+    if type(obj.data) == bpy.types.Mesh :
+        if apply_modifier:
+            depsgraph = bpy.context.evaluated_depsgraph_get()
+            obj = obj.evaluated_get(depsgraph)
+            mesh = obj.to_mesh()
+            return np.array([vec2np(v.co) for v in mesh.vertices], dtype=dtype)
         world_matrix = get_world_matrix_as_np(obj, dtype=dtype)  # (4, 4)
         return mesh2np(obj.data, world_matrix=world_matrix, **kwargs)
     elif type(obj.data) == bpy.types.Armature:
@@ -39,8 +47,9 @@ def obj2np(obj: bpy.types.Object, dtype=np.float32, **kwargs) -> np.ndarray:
             f"{type(obj.data)} is not supported with obj2np")
 
 
-def objname2np(obj_name: str, dtype=np.float32, **kwargs) -> np.ndarray:
-    return obj2np(bpy.context.scene.objects[obj_name], dtype=dtype, **kwargs)
+def objname2np(obj_name: str, dtype=np.float32, apply_modifier=False, **kwargs) -> np.ndarray:
+    return obj2np(bpy.context.scene.objects[obj_name], dtype=dtype,
+                  apply_modifier=apply_modifier, **kwargs)
 
 
 def mesh2np(mesh: bpy.types.Mesh, world_matrix=None,

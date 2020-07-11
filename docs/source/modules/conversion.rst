@@ -29,13 +29,14 @@ bnp.conversion
     :return: Row-major `np.ndarray` (matrix_size)
 
 
-.. py:function:: obj2np(obj: bpy.types.Object, dtype=np.float32, **kwargs)
+.. py:function:: obj2np(obj: bpy.types.Object, dtype=np.float32, apply_modifier=False, **kwargs)
 
     Convert a `bpy.types.Object` which have a mesh to `np.ndarray` at current frame.
     If obj.data == bpy.types.Mesh, this method calls `mesh2np` or `armature2np`.
 
     :param bpy.types.Object obj: object which have a mesh
     :param dtype: dtype
+    :param bool apply_modifier: whether to apply modifiers
     :param kwargs: other attrs
     :return: `np.ndarray`
 
