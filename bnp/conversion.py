@@ -1,12 +1,13 @@
 import bpy
-import mathutils
+from mathutils import Vector, Matrix
+import bnp.mathfunc
 import numpy as np
 
 
 def any2np(obj, dtype=np.float32, **kwargs):
-    if type(obj) == mathutils.Vector:
+    if type(obj) == Vector:
         return vec2np(obj, dtype=dtype)
-    if type(obj) == mathutils.Matrix:
+    if type(obj) == Matrix:
         return mat2np(obj, dtype=dtype)
     elif type(obj) == bpy.types.Object:
         return obj2np(obj, dtype=dtype, **kwargs)
@@ -26,7 +27,7 @@ def mat2np(mat, dtype=np.float32):
     return np.array([vec2np(mat[rid]) for rid in range(len(mat.row))], dtype=dtype)
 
 
-def obj2np(obj, dtype=np.float32, **kwargs):
+def obj2np(obj: bpy.types.Object, dtype=np.float32, **kwargs):
     # Input: obj(bpy.types.Object), Output: positions or normals
     if type(obj.data) == bpy.types.Mesh:
         world_matrix = get_world_matrix_as_np(obj, dtype=dtype)  # (4, 4)
@@ -38,11 +39,11 @@ def obj2np(obj, dtype=np.float32, **kwargs):
             f"{type(obj.data)} is not supported with obj2np")
 
 
-def objname2np(obj_name, dtype=np.float32, **kwargs):
+def objname2np(obj_name: str, dtype=np.float32, **kwargs):
     return obj2np(bpy.context.scene.objects[obj_name], dtype=dtype, **kwargs)
 
 
-def mesh2np(mesh, world_matrix=None,
+def mesh2np(mesh: bpy.types.Mesh, world_matrix=None,
             geo_type="position", dtype=np.float32, is_local=False,
             frame=bpy.context.scene.frame_current, as_homogeneous=False):
     # Input: mesh(bpy.types.Mesh), Output: positions or normals
@@ -67,7 +68,7 @@ def mesh2np(mesh, world_matrix=None,
     return global_verts if as_homogeneous else global_verts[:, 0:3]
 
 
-def armature2np(armature, dtype=np.float32, mode="dynamic",
+def armature2np(armature: bpy.types.Armature, dtype=np.float32, mode="dynamic",
                 frame=bpy.context.scene.frame_current):
     if mode in ["head", "tail", "length", "rest"]:
         return np.array([get_bone_as_np(
@@ -79,30 +80,67 @@ def armature2np(armature, dtype=np.float32, mode="dynamic",
         raise NotImplementedError(f"Not supported the mode {mode}.")
 
 
-def get_world_matrix_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current):
+def get_world_matrix_as_np(obj: bpy.types.Object, dtype=np.float32, frame=bpy.context.scene.frame_current):
     bpy.context.scene.frame_set(frame)
     return mat2np(obj.matrix_world, dtype=dtype)  # (4, 4)
 
 
-def get_location_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current):
-    bpy.context.scene.frame_set(frame)
-    return vec2np(obj.location, dtype=dtype)  # (3)
-
-
-def get_rotation_as_np(obj, dtype=np.float32, mode="DEFAULT",
+def get_location_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
                        frame=bpy.context.scene.frame_current):
     bpy.context.scene.frame_set(frame)
-    if mode == "QUATERNION" or (mode == "DEFAULT" and obj.rotation_mode == "QUATERNION"):
-        return vec2np(obj.rotation_axis_angle, dtype=dtype)  # (3)
-    elif mode == "AXIS_ANGLE" or (mode == "DEFAULT" and obj.rotation_mode == "AXIS_ANGLE"):
-        return vec2np(obj.rotation_axis_angle, dtype=dtype)  # (4)
-    else:
-        return vec2np(obj.rotation_euler, dtype=dtype)  # (3)
+    location = vec2np(obj.location, dtype=dtype)
+    if not to_matrix:
+        return location  # (3)
+    """
+    # equal to decomposition of obj.matrix_world
+    loc, rot, scale = obj.matrix_world.decompose()
+    mat = mat2np(Matrix.Translation(loc))
+    """
+    mat = np.eye(4, dtype=dtype)
+    mat[0:3, 0:3] = np.diag(location)
+    return mat  # (4, 4)
 
 
-def get_scale_as_np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current):
+def get_rotation_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
+                       frame=bpy.context.scene.frame_current):
     bpy.context.scene.frame_set(frame)
-    return vec2np(obj.scale)  # (3)
+    if obj.rotation_mode == "QUATERNION":
+        rot = vec2np(obj.rotation_quaternion, dtype=dtype)  # (3)
+    elif obj.rotation_mode == "AXIS_ANGLE":
+        rot = vec2np(obj.rotation_axis_angle, dtype=dtype)  # (4)
+    else:
+        rot = vec2np(obj.rotation_euler, dtype=dtype)  # (3)
+    if not to_matrix:
+        return rot
+    """
+    # equal to decomposition of obj.matrix_world
+    loc, rot, scale = obj.matrix_world.decompose()  # rot is quaternion
+    mat = mat2np(rot.to_matrix().to_4x4())
+    """
+    if obj.rotation_mode == "QUATERNION":
+        mat = bnp.mathfunc.quaternion2R(rot, dtype=dtype)
+    elif obj.rotation_mode == "AXIS_ANGLE":
+        mat = bnp.mathfunc.axis_angle2R(rot, dtype=dtype)
+    else:
+        mat = bnp.mathfunc.euler2R(rot, obj.rotation_mode, dtype=dtype)
+    return mat
+
+
+def get_scale_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
+                    frame=bpy.context.scene.frame_current):
+    bpy.context.scene.frame_set(frame)
+    scale = vec2np(obj.scale)  # (3)
+    if not to_matrix:
+        return scale
+    """
+    # equal to decomposition of obj.matrix_world
+    loc, rot, scale = obj.matrix_world.decompose()
+    mat = Matrix.Scale(scale[0], 4, (1, 0, 0)) @ Matrix.Scale(
+        scale[1], 4, (0, 1, 0)) @ Matrix.Scale(scale[2], 4, (0, 0, 1))
+    """
+    mat = np.eye(4, dtype=dtype)
+    mat[0:3, 0:3] = np.diag(scale)
+    return mat
 
 
 def get_posebone_as_np(posebone, dtype=np.float32, mode="dynamic",

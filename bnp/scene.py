@@ -9,8 +9,9 @@ def remove_objects(prefix="debug"):
     bpy.ops.object.select_all(action="DESELECT")
     cnt = 0
     for obj in bpy.context.scene.objects:
-        obj.select_set(re.match(prefix, obj.name) is not None)
-        cnt += 0
+        if re.match(prefix, obj.name) is not None:
+            obj.select_set(True)
+            cnt += 1
     if cnt != 0:
         bpy.ops.object.delete()
     clear_garbages()

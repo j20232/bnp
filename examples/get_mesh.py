@@ -18,14 +18,26 @@ if __name__ == '__main__':
     vertices = bnp.conversion.obj2np(obj)
     print("Vertex positions: ", vertices)  # (vtx_num, 3)
 
+    world_matrix = bnp.conversion.get_world_matrix_as_np(obj)
+    print("world_matrix: ", world_matrix)
+
+    # Location
     location = bnp.conversion.get_location_as_np(obj)
     print("Location: ", location)
+    loc_matrix = bnp.conversion.get_location_as_np(obj, to_matrix=True)
+    print("Location matrix: ", loc_matrix)
 
+    # Rotation
     rotation = bnp.conversion.get_rotation_as_np(obj)
     print("Rotation: ", rotation)
+    rot_matrix = bnp.conversion.get_rotation_as_np(obj, to_matrix=True)
+    print("Rotation matrix: ", rot_matrix)
 
+    # Scale
     scale = bnp.conversion.get_scale_as_np(obj)
     print("Scale: ", scale)
+    scale_matrix = bnp.conversion.get_scale_as_np(obj, to_matrix=True)
+    print("Scale matrix: ", scale_matrix)
 
     bnp.scene.put_cubes(vertices)
 

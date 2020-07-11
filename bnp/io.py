@@ -2,14 +2,16 @@ import bpy
 import os
 import numpy as np
 
-def import_geom(filepath, keep_vertex_order=True, **kwargs):
+
+def import_geom(filepath: str, keep_vertex_order=True, **kwargs):
     ext = filepath.split(".")[-1]
     if not os.path.exists(filepath):
         print(f"WARNING: {filepath} doesn't exist!")
         return
     if ext == "obj":
         split_mode = "OFF" if keep_vertex_order else "ON"
-        bpy.ops.import_scene.obj(filepath=filepath, split_mode=split_mode, **kwargs)
+        bpy.ops.import_scene.obj(
+            filepath=filepath, split_mode=split_mode, **kwargs)
     elif ext == "fbx":
         bpy.ops.import_scene.fbx(filepath=filepath, **kwargs)
     elif ext == "glb":
@@ -24,7 +26,7 @@ def import_geom(filepath, keep_vertex_order=True, **kwargs):
         raise Exception("Illegal extension")
 
 
-def export_geom(filepath, obj,
+def export_geom(filepath: str, obj: bpy.types.Object,
                 keep_vertex_order=True, use_selection=True, **kwargs):
     bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
     bpy.ops.object.select_all(action="DESELECT")
@@ -34,7 +36,8 @@ def export_geom(filepath, obj,
         bpy.ops.export_scene.obj(filepath=filepath, keep_vertex_order=keep_vertex_order,
                                  use_selection=use_selection, **kwargs)
     elif ext == "fbx":
-        bpy.ops.export_scene.fbx(filepath=filepath, use_selection=use_selection, **kwargs)
+        bpy.ops.export_scene.fbx(
+            filepath=filepath, use_selection=use_selection, **kwargs)
     elif ext == "glb":
         bpy.ops.export_scene.gltf(filepath=filepath, **kwargs)
     elif ext == "x3d":
@@ -46,6 +49,3 @@ def export_geom(filepath, obj,
     else:
         raise Exception("Illegal extension")
     print(f"Exported {obj.name} to {filepath}")
-
-
-
