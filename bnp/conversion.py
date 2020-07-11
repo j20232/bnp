@@ -4,7 +4,7 @@ import bnp.mathfunc
 import numpy as np
 
 
-def any2np(obj, dtype=np.float32, **kwargs):
+def any2np(obj, dtype=np.float32, **kwargs) -> np.ndarray:
     if type(obj) == Vector:
         return vec2np(obj, dtype=dtype)
     if type(obj) == Matrix:
@@ -19,15 +19,15 @@ def any2np(obj, dtype=np.float32, **kwargs):
         raise NotImplementedError(f"{type(obj)} is not supported with any2np.")
 
 
-def vec2np(vec, dtype=np.float32):
+def vec2np(vec, dtype=np.float32) -> np.ndarray:
     return np.array([v for v in vec], dtype=dtype)
 
 
-def mat2np(mat, dtype=np.float32):
+def mat2np(mat, dtype=np.float32) -> np.ndarray:
     return np.array([vec2np(mat[rid]) for rid in range(len(mat.row))], dtype=dtype)
 
 
-def obj2np(obj: bpy.types.Object, dtype=np.float32, **kwargs):
+def obj2np(obj: bpy.types.Object, dtype=np.float32, **kwargs) -> np.ndarray:
     # Input: obj(bpy.types.Object), Output: positions or normals
     if type(obj.data) == bpy.types.Mesh:
         world_matrix = get_world_matrix_as_np(obj, dtype=dtype)  # (4, 4)
@@ -39,13 +39,13 @@ def obj2np(obj: bpy.types.Object, dtype=np.float32, **kwargs):
             f"{type(obj.data)} is not supported with obj2np")
 
 
-def objname2np(obj_name: str, dtype=np.float32, **kwargs):
+def objname2np(obj_name: str, dtype=np.float32, **kwargs) -> np.ndarray:
     return obj2np(bpy.context.scene.objects[obj_name], dtype=dtype, **kwargs)
 
 
 def mesh2np(mesh: bpy.types.Mesh, world_matrix=None,
             geo_type="position", dtype=np.float32, is_local=False,
-            frame=bpy.context.scene.frame_current, as_homogeneous=False):
+            frame=bpy.context.scene.frame_current, as_homogeneous=False) -> np.ndarray:
     # Input: mesh(bpy.types.Mesh), Output: positions or normals
     bpy.context.scene.frame_set(frame)
     if geo_type not in ["position", "normal"]:
@@ -69,7 +69,7 @@ def mesh2np(mesh: bpy.types.Mesh, world_matrix=None,
 
 
 def armature2np(armature: bpy.types.Armature, dtype=np.float32, mode="dynamic",
-                frame=bpy.context.scene.frame_current):
+                frame=bpy.context.scene.frame_current) -> np.ndarray:
     if mode in ["head", "tail", "length", "rest_from_origin", "rest"]:
         return np.array([get_bone_as_np(
             p.bone, dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
@@ -80,13 +80,13 @@ def armature2np(armature: bpy.types.Armature, dtype=np.float32, mode="dynamic",
         raise NotImplementedError(f"Not supported the mode {mode}.")
 
 
-def get_world_matrix_as_np(obj: bpy.types.Object, dtype=np.float32, frame=bpy.context.scene.frame_current):
+def get_world_matrix_as_np(obj: bpy.types.Object, dtype=np.float32, frame=bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     return get_location_as_np(obj, dtype, True, frame) @ get_rotation_as_np(obj, dtype, True, frame) @ get_scale_as_np(obj, dtype, True, frame)
 
 
 def get_location_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-                       frame=bpy.context.scene.frame_current):
+                       frame=bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     location = vec2np(obj.location, dtype=dtype)
     if not to_matrix:
@@ -97,7 +97,7 @@ def get_location_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
 
 
 def get_rotation_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-                       frame=bpy.context.scene.frame_current):
+                       frame=bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     if obj.rotation_mode == "QUATERNION":
         rot = vec2np(obj.rotation_quaternion, dtype=dtype)  # (3)
@@ -118,7 +118,7 @@ def get_rotation_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
 
 
 def get_scale_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-                    frame=bpy.context.scene.frame_current):
+                    frame=bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     scale = vec2np(obj.scale)  # (3)
     if not to_matrix:
@@ -129,7 +129,7 @@ def get_scale_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
 
 
 def get_posebone_as_np(posebone, dtype=np.float32, mode="dynamic",
-                       frame=bpy.context.scene.frame_current):
+                       frame=bpy.context.scene.frame_current) -> np.ndarray:
     # Get posebon in pose mode
     bpy.context.scene.frame_set(frame)
     if mode == "head":
@@ -149,7 +149,7 @@ def get_posebone_as_np(posebone, dtype=np.float32, mode="dynamic",
 
 
 def get_bone_as_np(bone, dtype=np.float32, mode="rest",
-                   frame=bpy.context.scene.frame_current):
+                   frame=bpy.context.scene.frame_current) -> np.ndarray:
     # Get bone in edit mode
     bpy.context.scene.frame_set(frame)
     if mode == "head":  # local head position from the origin of the object
@@ -166,3 +166,15 @@ def get_bone_as_np(bone, dtype=np.float32, mode="rest",
         return 0
     else:
         raise NotImplementedError(f"mode {mode} isn't supported.")
+
+
+def get_skinning_weights_as_np(obj: bpy.types.Object, dtype=np.float32) -> np.ndarray:
+    # skining weights are equal to vertex weights in Blender
+    mesh = obj.data
+    vertices = mesh.vertices
+    skinning_weights = np.zeros((len(vertices), len(obj.vertex_groups)))
+    for vid, v in enumerate(mesh.vertices):
+        for vg in v.groups:
+            skinning_weights[vid, vg.group] = vg.weight
+        skinning_weights[vid] /= sum(skinning_weights[vid])
+    return skinning_weights  # (vtx_num, joint_num)

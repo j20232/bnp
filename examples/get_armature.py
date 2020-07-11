@@ -23,8 +23,17 @@ if __name__ == '__main__':
     bone_lengths = bnp.conversion.armature2np(amt, mode="length")
     print("Bone lengths: ", bone_lengths)  # (joint_num,)
 
-    rest_pose = bnp.conversion.armature2np(amt, mode="rest_from_origin")
-    print("Rest pose: ", rest_pose)  # (joint_num, 4, 4) considering bones' rotation at rest pose
+    rest_pose_from_origin = bnp.conversion.armature2np(amt, mode="rest_from_origin")
+    print("Rest pose from origin: ", rest_pose_from_origin)  # (joint_num, 4, 4) considering bones' rotation at rest pose
 
-    dynamic_pose = bnp.conversion.armature2np(amt, mode="dynamic_from_origin")
-    print("Dynamic pose: ", dynamic_pose)  # (joint_num, 4, 4) considering bones' rotation at rest pose
+    dynamic_pose_from_origin = bnp.conversion.armature2np(amt, mode="dynamic_from_origin", frame=50)
+    print("Dynamic pose_from_origin: ", dynamic_pose_from_origin)  # (joint_num, 4, 4) considering bones' rotation at rest pose
+
+    obj = amt.children[0]
+    rest_pose_vertices = bnp.conversion.any2np(obj, as_homogeneous=True)
+    skinning_weights = bnp.conversion.get_skinning_weights_as_np(obj)
+    print("Skinning weights: ", skinning_weights.shape)  # (vtx_num, joint_num)
+
+    vertices = bnp.mathfunc.linear_blend_skinning(rest_pose_vertices, rest_pose_from_origin,
+                                                  dynamic_pose_from_origin, skinning_weights)
+    bnp.scene.put_cubes(vertices[:, 0:3], size=0.15)

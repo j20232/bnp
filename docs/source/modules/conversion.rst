@@ -140,3 +140,12 @@ bnp.conversion
     :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,),"rest": translation matrices relative to each parent at rest pose (`joint_num`, 4, 4)
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray`
+
+
+.. py:function:: get_skinning_weights_as_np(obj: bpy.types.Object, dtype=np.float32) -> np.ndarray
+
+    Get skinning weights (vertex weights in Blender) as `np.ndarray`
+
+    :param bpy.types.Object obj: object which has `bpy.types.Mesh`
+    :param dtype: dtype
+    :return: `np.ndarray` skinning weights (vtx_num, joint_num)
