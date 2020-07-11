@@ -72,7 +72,7 @@ bnp.conversion
 
     :param bpy.types.Armature armature: armature
     :param dtype: dtype
-    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "rest" or "dynamic": transform matrices relative to each parent at rest pose / at the specified frame (`joint_num`, 4, 4)
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "rest" or "dynamic": translation matrices relative to each parent at rest pose / at the specified frame (`joint_num`, 4, 4)
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray`
 
@@ -93,7 +93,7 @@ bnp.conversion
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
-    :param bool to_matrix: whether to convert a location vector to a transformation matrix
+    :param bool to_matrix: whether to convert a location vector to a translation matrix
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray`  (4, 4) if to_matrix else (3)
 
@@ -104,7 +104,7 @@ bnp.conversion
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
-    :param bool to_matrix: whether to convert a rotation vector to a transformation matrix
+    :param bool to_matrix: whether to convert a rotation vector to a translation matrix
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray` (4, 4) if to_matrix else {(3) (euler angle) or (4) (quaternion or axis angle)}
 
@@ -115,7 +115,7 @@ bnp.conversion
 
     :param bpy.types.Object obj: object
     :param dtype: dtype
-    :param bool to_matrix: whether to convert a scale vector to a transformation matrix
+    :param bool to_matrix: whether to convert a scale vector to a translation matrix
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray` (4, 4) if to_matrix else (3)
 
@@ -126,7 +126,7 @@ bnp.conversion
 
     :param bpy.types.PoseBone posebone: posebone
     :param dtype: dtype
-    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,),"dynamic": transform matrices relative to each parent at the specified frame (`joint_num`, 4, 4)
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,),"dynamic": translation matrices relative to each parent at the specified frame (`joint_num`, 4, 4)
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray`
 
@@ -137,6 +137,6 @@ bnp.conversion
 
     :param bpy.types.Bone bone: bone
     :param dtype: dtype
-    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,),"rest": transform matrices relative to each parent at rest pose (`joint_num`, 4, 4)
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,),"rest": translation matrices relative to each parent at rest pose (`joint_num`, 4, 4)
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray`
