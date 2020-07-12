@@ -56,8 +56,8 @@ if __name__ == '__main__':
 
     vertices = bnp.mathfunc.linear_blend_skinning(rest_pose_vertices, rest_pose,
                                                   dynamic_pose, skinning_weights)
-    # bnp.scene.put_cubes(vertices[:, 0:3], size=0.15)
+    bnp.scene.put_cubes(vertices[:, 0:3], size=0.15)
 
     # Deformation with depsgraph
     deformed_vertices = bnp.conversion.obj2np(obj, frame=50, apply_modifier=True)
-    bnp.scene.put_cubes(deformed_vertices, size=0.15)
+    # bnp.scene.put_cubes(deformed_vertices, size=0.15)
