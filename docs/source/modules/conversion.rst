@@ -29,7 +29,7 @@ bnp.conversion
     :return: Row-major `np.ndarray` (matrix_size)
 
 
-.. py:function:: obj2np(obj: bpy.types.Object, dtype=np.float32, apply_modifier=False, **kwargs)
+.. py:function:: obj2np(obj: bpy.types.Object, dtype=np.float32, apply_modifier=False, frame=bpy.context.scene.frame_current, geo_type="position", is_local=False, as_homogeneous=False, mode="dynamic") -> np.ndarray
 
     Convert a `bpy.types.Object` which have a mesh to `np.ndarray` at current frame.
     If obj.data == bpy.types.Mesh, this method calls `mesh2np` or `armature2np`.
@@ -37,22 +37,31 @@ bnp.conversion
     :param bpy.types.Object obj: object which have a mesh
     :param dtype: dtype
     :param bool apply_modifier: whether to apply modifiers
-    :param kwargs: other attrs
+    :param int frame: frame when you want to get matrices
+    :param str geo_type: "position" or "normal". This is used when `obj.data == bpy.types.Mesh`.
+    :param bool is_local: whether to get positions as local coordinates. This is used when `obj.data == bpy.types.Mesh`.
+    :param bool as_homogeneous: whether to get positions as homogeneous or not. This is used when `obj.data == bpy.types.Mesh`.
+    :param str mode: "head", "tail", "length", "rest_from_origin", "rest", "rest_relative", "dynamic", "dynamic_from_origin", "dynamic_relative". This is used when `obj.data == bpy.types.Armature`.
     :return: `np.ndarray`
 
 
-.. py:function:: objname2np(obj_name: str, dtype=np.float32, **kwargs)
+.. py:function:: objname2np(obj_name: str, dtype=np.float32, apply_modifier=False, frame=bpy.context.scene.frame_current, geo_type="position", is_local=False, as_homogeneous=False, mode="dynamic") -> np.ndarray
 
     Get `bpy.types.Object` in the Scene which have a mesh and convert it to `np.ndarray` at current frame.
     This method calls `obj2np`.
 
     :param str obj_name: object name in the Scene
     :param dtype: dtype
-    :param kwargs: other attrs
+    :param bool apply_modifier: whether to apply modifiers
+    :param int frame: frame when you want to get matrices
+    :param str geo_type: "position" or "normal". This is used when `obj.data == bpy.types.Mesh`.
+    :param bool is_local: whether to get positions as local coordinates. This is used when `obj.data == bpy.types.Mesh`.
+    :param bool as_homogeneous: whether to get positions as homogeneous or not. This is used when `obj.data == bpy.types.Mesh`.
+    :param str mode: "head", "tail", "length", "rest_from_origin", "rest", "rest_relative", "dynamic", "dynamic_from_origin", "dynamic_relative". This is used when `obj.data == bpy.types.Armature`.
     :return: `np.ndarray`
 
 
-.. py:function:: mesh2np(mesh: bpy.types.Mesh, world_matrix=None, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, as_homogeneous=False)
+.. py:function:: mesh2np(mesh: bpy.types.Mesh, world_matrix=None, geo_type="position", dtype=np.float32, is_local=False, frame=bpy.context.scene.frame_current, as_homogeneous=False) -> np.ndarray
 
     Convert a `bpy.types.Mesh` to  `np.ndarray` at current frame.
 
@@ -73,7 +82,7 @@ bnp.conversion
 
     :param bpy.types.Armature armature: armature
     :param dtype: dtype
-    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "rest" or "dynamic": translation matrices relative to each parent at rest pose / at the specified frame (`joint_num`, 4, 4)
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "rest_from_origin" or "dynamic_from_origin": absolute translation matrices at rest pose / the frame considering bones' initial translation (joint_num, 4, 4), "rest_relative" / "dynamic_relative": translation matices relative to parents not considering intiial translation (joint_num, 4, 4), "rest" / "dynamic": absolute translation matrices at rest pose / the frame not considering bones' initial translation
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray`
 
@@ -127,7 +136,7 @@ bnp.conversion
 
     :param bpy.types.PoseBone posebone: posebone
     :param dtype: dtype
-    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,),"dynamic": translation matrices relative to each parent at the specified frame (`joint_num`, 4, 4)
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "dynamic_from_origin": absolute translation matrices at the frame considering bones' initial translation (joint_num, 4, 4), "dynamic_relative": translation matices relative to parents not considering intiial translation (joint_num, 4, 4), "dynamic": absolute translation matrices at the frame not considering bones' initial translation
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray`
 
@@ -138,7 +147,7 @@ bnp.conversion
 
     :param bpy.types.Bone bone: bone
     :param dtype: dtype
-    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,),"rest": translation matrices relative to each parent at rest pose (`joint_num`, 4, 4)
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "rest_from_origin": absolute translation matrices at rest pose considering bones' initial translation (joint_num, 4, 4), "rest_relative": translation matices relative to parents not considering intiial translation (joint_num, 4, 4), "rest": absolute translation matrices at rest pose not considering bones' initial translation
     :param int frame: frame when you want to read (default: current frame)
     :return: `np.ndarray`
 
@@ -150,3 +159,10 @@ bnp.conversion
     :param bpy.types.Object obj: object which has `bpy.types.Mesh`
     :param dtype: dtype
     :return: `np.ndarray` skinning weights (vtx_num, joint_num)
+
+
+.. py:function:: normalize_armature(armature: bpy.types.Object)
+
+    Normalize bones' rolls
+
+    :param bpy.types.Object obj: object which has `bpy.types.Armature`

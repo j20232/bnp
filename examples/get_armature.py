@@ -27,8 +27,8 @@ if __name__ == '__main__':
     rest_pose_from_origin = bnp.conversion.armature2np(amt, mode="rest_from_origin")
     print("Rest pose from origin: ", rest_pose_from_origin)  # (joint_num, 4, 4) considering bones' rotation at rest pose
 
-    dynamic_pose_from_origin = bnp.conversion.armature2np(amt, mode="dynamic_from_origin", frame=50)
-    print("Dynamic pose_from_origin: ", dynamic_pose_from_origin)  # (joint_num, 4, 4) considering bones' rotation at the pose
+    dynamic_pose_from_origin = bnp.conversion.armature2np(amt, mode="dynamic_from_origin", frame=frame)
+    print("Dynamic pose from origin: ", dynamic_pose_from_origin)  # (joint_num, 4, 4) considering bones' rotation at the pose
 
     obj = amt.children[0]
     rest_pose_vertices = bnp.conversion.any2np(obj, as_homogeneous=True)
@@ -38,6 +38,24 @@ if __name__ == '__main__':
     # Linear Blend Skinning from skinning weights and poses
     vertices = bnp.mathfunc.linear_blend_skinning(rest_pose_vertices, rest_pose_from_origin,
                                                   dynamic_pose_from_origin, skinning_weights)
+    # bnp.scene.put_cubes(vertices[:, 0:3], size=0.15)
+
+    armature = bnp.conversion.normalize_armature(amt)
+    kinematic_tree = bnp.conversion.get_kinematic_tree(amt)
+    print("kinematic_tree: ", kinematic_tree)
+
+    rest_pose_relative = bnp.conversion.armature2np(amt, mode="rest_relative")
+    print("Rest pose relative to parent: ", rest_pose_relative)  # (joint_num, 4, 4) not considering bones' rotation at rest pose
+    rest_pose = bnp.conversion.armature2np(amt, mode="rest")
+    print("Rest pose: ", rest_pose)  # (joint_num, 4, 4) not considering bones' rotation at rest pose
+
+    dynamic_pose_relative = bnp.conversion.armature2np(amt, mode="dynamic_relative", frame=frame)
+    print("Dynamic pose relative to parent: ", dynamic_pose_relative)  # (joint_num, 4, 4) not considering bones' rotation at the pose
+    dynamic_pose = bnp.conversion.armature2np(amt, mode="dynamic", frame=frame)
+    print("Dynamic pose: ", dynamic_pose)  # (joint_num, 4, 4) not considering bones' rotation at the pose
+
+    vertices = bnp.mathfunc.linear_blend_skinning(rest_pose_vertices, rest_pose,
+                                                  dynamic_pose, skinning_weights)
     # bnp.scene.put_cubes(vertices[:, 0:3], size=0.15)
 
     # Deformation with depsgraph
