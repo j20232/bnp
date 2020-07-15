@@ -83,17 +83,17 @@ def mesh2np(mesh: bpy.types.Mesh, world_matrix=None,
 
 
 def armature2np(armature: bpy.types.Object, dtype=np.float32, mode="dynamic",
-                frame=bpy.context.scene.frame_current) -> np.ndarray:
+                frame=bpy.context.scene.frame_current, rotation_mode=None) -> np.ndarray:
     normalize_armature(armature)
     kinematic_tree = get_kinematic_tree(armature)
-    if mode in ["head", "tail", "length", "rest_from_origin", "rest", "rest_relative"]:
+    if mode in ["head", "tail", "length", "rest_from_origin", "rest", "rest"]:
         return np.array([get_bone_as_np(
-            p.bone, kinematic_tree=kinematic_tree, armature=armature,
-            dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
-    elif mode in ["dynamic", "dynamic_from_origin", "dynamic_relative"]:
+            p.bone, dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
+    elif mode in ["dynamic", "dynamic_from_origin"]:
         return np.array([get_posebone_as_np(
-            p, kinematic_tree=kinematic_tree, armature=armature,
-            dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
+            p, dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
+    elif mode in ["rotation"]:
+        return np.array([get_rotation_as_np(p, rotation_mode=rotation_mode, dtype=dtype, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
     else:
         raise NotImplementedError(f"Not supported the mode {mode}.")
 
@@ -145,7 +145,7 @@ def get_scale_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
     return mat
 
 
-def get_posebone_as_np(posebone, kinematic_tree=None, armature=None,
+def get_posebone_as_np(posebone,
                        dtype=np.float32, mode="dynamic",
                        frame=bpy.context.scene.frame_current) -> np.ndarray:
     # Get posebon in pose mode
@@ -156,34 +156,22 @@ def get_posebone_as_np(posebone, kinematic_tree=None, armature=None,
         return vec2np(posebone.tail, dtype=dtype)
     elif mode == "length":  # bone length
         return posebone.length
-    elif mode == "dynamic_from_origin":
-        # absolute translation matrix
-        # considering bones' rotation at rest pose
-        return mat2np(posebone.matrix, dtype=dtype)
-    elif mode == "dynamic_relative":
-        if kinematic_tree is None or armature is None:
-            raise Exception("Kinematic tree and armature should be inputted.")
-        dynamic_pose = get_rotation_as_np(posebone, dtype=dtype, to_matrix=True, frame=frame)
-        bone_id = list(armature.pose.bones).index(posebone)
-        parent_id = kinematic_tree[bone_id]
-        parent_pos = np.zeros(3, dtype=dtype) if parent_id == -1 else get_bone_as_np(armature.pose.bones[parent_id].bone, dtype=dtype, mode="head", frame=frame)
-        current_pos = get_bone_as_np(posebone.bone, dtype=dtype, mode="head", frame=frame)
-        dynamic_pose[0:3, 3] = current_pos - parent_pos
-        return dynamic_pose
+    elif mode == "offset":  # offset matrix from the parent
+        return get_bone_as_np(posebone.bone, dtype=dtype, mode=mode, frame=frame)
     elif mode == "dynamic":
-        if kinematic_tree is None or armature is None:
-            raise Exception("Kinematic tree and armature should be inputted.")
-        bone_id = list(armature.pose.bones).index(posebone)
-        parent_id = kinematic_tree[bone_id]
-        current_mat = get_posebone_as_np(posebone, kinematic_tree=kinematic_tree, armature=armature, dtype=dtype, mode="dynamic_relative", frame=frame)
-        parent_mat = get_posebone_as_np(armature.pose.bones[parent_id], kinematic_tree=kinematic_tree,
-                                        armature=armature, dtype=dtype, mode="dynamic", frame=frame) if parent_id != -1 else np.eye(4, dtype=dtype)
-        return parent_mat @ current_mat
+        dynamic_pose = get_rotation_as_np(posebone, dtype=dtype, to_matrix=True, frame=frame)
+        basis = posebone_basis(dtype=dtype)
+        rot_scale = basis if posebone.parent is None else get_posebone_as_np(
+            posebone.parent, dtype=dtype, mode=mode) @ get_posebone_as_np(posebone, dtype=dtype, mode="offset")
+        dynamic_pose = rot_scale @ dynamic_pose
+        if posebone.parent is None:  # root node
+            dynamic_pose[0:3, 3] = (basis @ get_location_as_np(posebone, dtype=dtype, to_matrix=True, frame=frame))[0:3, 3]
+        return dynamic_pose  # equal to mat2np(posebone.matrix, dtype=dtype)
     else:
         raise NotImplementedError(f"mode {mode} isn't supported.")
 
 
-def get_bone_as_np(bone, kinematic_tree=None, armature=None,
+def get_bone_as_np(bone,
                    dtype=np.float32, mode="rest",
                    frame=bpy.context.scene.frame_current) -> np.ndarray:
     # Get bone in edit mode
@@ -194,35 +182,26 @@ def get_bone_as_np(bone, kinematic_tree=None, armature=None,
         return vec2np(bone.tail_local, dtype=dtype)
     elif mode == "length":  # bone length
         return bone.length
-    elif mode == "rest_from_origin":
-        # absolute translation matrix
-        # considering bones' rotation at rest pose
-        return mat2np(bone.matrix_local, dtype=dtype)
-    elif mode == "rest_relative":
-        # translation matrix relative to the parent (restpose)
-        # not considering bones' rotation at rest pose
-        if kinematic_tree is None or armature is None:
-            raise Exception("Kinematic tree and armature should be inputted.")
-        rest_pose = np.eye(4, dtype=dtype)
-        bone_id = list(armature.data.bones).index(bone)
-        parent_id = kinematic_tree[bone_id]
-        parent_pos = np.zeros(3, dtype=dtype) if parent_id == -1 else get_bone_as_np(armature.pose.bones[parent_id].bone, dtype=dtype, mode="head", frame=frame)
-        current_pos = get_bone_as_np(bone, dtype=dtype, mode="head", frame=frame)
-        rest_pose[0:3, 3] = current_pos - parent_pos
-        return rest_pose
+    elif mode == "offset":  # offset matrix from the parent
+        offset = bone.matrix.to_4x4()
+        offset.translation = bone.head
+        if bone.parent is not None:
+            offset.translation.y += bone.parent.length
+        return mat2np(offset, dtype=dtype)
     elif mode == "rest":
         # absolute translation matrix
         # not considering bones' rotation at rest pose
-        if kinematic_tree is None or armature is None:
-            raise Exception("Kinematic tree and armature should be inputted.")
-        bone_id = list(armature.data.bones).index(bone)
-        parent_id = kinematic_tree[bone_id]
-        current_mat = get_bone_as_np(bone, kinematic_tree=kinematic_tree, armature=armature, dtype=dtype, mode="rest_relative", frame=frame)
-        parent_mat = get_bone_as_np(armature.pose.bones[parent_id].bone, kinematic_tree=kinematic_tree,
-                                    armature=armature, dtype=dtype, mode="rest", frame=frame) if parent_id != -1 else np.eye(4, dtype=dtype)
-        return parent_mat @ current_mat
+        # equal to mat2np(bone.matrix_local, dtype=dtype)
+        return posebone_basis(dtype) if bone.parent is None else get_bone_as_np(bone.parent, dtype=dtype, mode="rest", frame=frame) @ get_bone_as_np(bone, dtype=dtype, mode="offset", frame=frame)
     else:
         raise NotImplementedError(f"mode {mode} isn't supported.")
+
+
+def posebone_basis(dtype=np.float32):
+    return np.array([1.0, 0.0, 0.0, 0.0,
+                     0.0, 0.0, -1.0, 0.0,
+                     0.0, 1.0, 0.0, 0.0,
+                     0.0, 0.0, 0.0, 1.0], dtype=dtype).reshape(4, 4)
 
 
 def get_skinning_weights_as_np(obj: bpy.types.Object, dtype=np.float32) -> np.ndarray:

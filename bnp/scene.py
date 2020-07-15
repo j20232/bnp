@@ -1,4 +1,5 @@
 import bpy
+import bmesh
 import re
 
 
@@ -15,6 +16,14 @@ def remove_objects(prefix="debug"):
     if cnt != 0:
         bpy.ops.object.delete()
     clear_garbages()
+
+
+def remove_keyframe_from_armature(armature, frame, exception_bone_indices=None):
+    exception_bone_indices = exception_bone_indices if exception_bone_indices is not None else []
+    for idx, bone in enumerate(armature.pose.bones):
+        if idx in exception_bone_indices:
+            continue
+        print(bone, bone.rotation_mode)
 
 
 def clear_garbages():
@@ -36,6 +45,17 @@ def clear_garbages():
     for block in bpy.data.collections:
         if block.users == 0:
             bpy.data.collections.remove(block)
+
+
+def get_active_indices(obj):
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode="EDIT")
+    bm = bmesh.from_edit_mesh(obj.data)
+    bm.verts.ensure_lookup_table()
+    indices = [v.index for v in reversed(bm.verts) if v.select]
+    bm.free()
+    bpy.ops.object.mode_set(mode="OBJECT")
+    return indices
 
 
 def put_cubes(positions, prefix="debug", size=0.015, sampling_rate=1):
