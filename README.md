@@ -1,5 +1,7 @@
 # 🐣 bnp: Blender numpy utilities
 
+![](https://github.com/j20232/bnp/blob/master/assets/logo.png)
+
 ## ✌ About
 
 bnp contains simple numpy utilities for Blender.
