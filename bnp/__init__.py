@@ -22,7 +22,10 @@ if True:
     from bnp.objects.armature import change_bone_rotation_mode, normalize_roll
 
     # mesh
-    from bnp.objects.mesh import mesh2np, skinning_weights2np, normalize_skinning_weights, get_active_vertex_indices
+    from bnp.objects.mesh import mesh2np, skinning_weights2np
+    from bnp.objects.mesh import normalize_skinning_weights
+    from bnp.objects.mesh import get_active_vertex_indices
+    from bnp.objects.mesh import remove_shape_keys, add_shape_key, adjust_shape_key, insert_keyframes_to_shape_keys, get_keyframe_of_shapekeys
 
     # obj
     from bnp.objects.obj import any2np, obj2np, objname2np

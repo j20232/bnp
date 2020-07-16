@@ -14,7 +14,7 @@ if True:
     # base
     from bnp.objects.base import batch_identity, vec2np, mat2np, vertices2np, collection2np, world_matrix2np, location2np, rotation2np, scale2np
     from bnp.objects.base import normalize_quaternion, normalize_axis_angle, quaternion2R, axis_angle2R, euler2R
-    from bnp.objects.base import remove_keyframe
+    from bnp.objects.base import get_keyframe_list, remove_keyframe
 
     # armature
     from bnp.objects.armature import armature2np, posebone2np, bone2np
@@ -23,7 +23,10 @@ if True:
     from bnp.objects.armature import change_bone_rotation_mode, normalize_roll
 
     # mesh
-    from bnp.objects.mesh import mesh2np, skinning_weights2np, normalize_skinning_weights, get_active_vertex_indices
+    from bnp.objects.mesh import mesh2np, skinning_weights2np
+    from bnp.objects.mesh import normalize_skinning_weights
+    from bnp.objects.mesh import get_active_vertex_indices
+    from bnp.objects.mesh import remove_shape_keys, add_shape_key, adjust_shape_key, insert_keyframes_to_shape_keys, get_keyframe_of_shapekeys
 
     # obj
     from bnp.objects.obj import any2np, obj2np, objname2np

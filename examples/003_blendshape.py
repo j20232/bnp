@@ -15,17 +15,17 @@ if __name__ == '__main__':
 
     obj = bpy.context.scene.objects["Cube"]
 
-    bnp.objects.mesh.remove_shape_keys(obj)
+    bnp.remove_shape_keys(obj)
 
-    bnp.objects.mesh.add_shape_key(obj, "root")
+    bnp.add_shape_key(obj, "root")
     vertices = bnp.any2np(obj)
     print("vertices: ", vertices.shape)
 
     small_vertices = 0.5 * vertices
-    bnp.objects.mesh.add_shape_key(obj, "small", vertices=small_vertices)
+    bnp.add_shape_key(obj, "small", vertices=small_vertices)
 
     big_vertices = 1.5 * vertices
-    bnp.objects.mesh.add_shape_key(obj, "big", vertices=big_vertices)
+    bnp.add_shape_key(obj, "big", vertices=big_vertices)
 
     blend_weights = {
         # key: frame, dict: blend weights
@@ -45,7 +45,7 @@ if __name__ == '__main__':
             "big": 1.0,
         }
     }
-    bnp.objects.mesh.insert_keyframes_to_shape_keys(obj, blend_weights)
+    bnp.insert_keyframes_to_shape_keys(obj, blend_weights)
 
-    keyframes = bnp.objects.mesh.get_keyframe_of_shapekeys(obj)
+    keyframes = bnp.get_keyframe_of_shapekeys(obj)
     print("keyframes: ", keyframes)
