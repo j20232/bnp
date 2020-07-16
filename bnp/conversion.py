@@ -1,7 +1,9 @@
 import bpy
 from bpy.types import Depsgraph
 from mathutils import Vector, Matrix
+from bnp.mathfunc import vec2np, mat2np
 import bnp.mathfunc
+from bnp.scene import normalize_armature
 import numpy as np
 
 
@@ -20,14 +22,6 @@ def any2np(obj, dtype=np.float32, **kwargs) -> np.ndarray:
         raise NotImplementedError(f"{type(obj)} is not supported with any2np.")
 
 
-def vec2np(vec, dtype=np.float32) -> np.ndarray:
-    return np.array([v for v in vec], dtype=dtype)
-
-
-def mat2np(mat, dtype=np.float32) -> np.ndarray:
-    return np.array([vec2np(mat[rid]) for rid in range(len(mat.row))], dtype=dtype)
-
-
 def obj2np(obj: bpy.types.Object, dtype=np.float32, apply_modifier=False,
            frame=bpy.context.scene.frame_current, geo_type="position",
            is_local=False, as_homogeneous=False, mode="dynamic") -> np.ndarray:
@@ -39,7 +33,7 @@ def obj2np(obj: bpy.types.Object, dtype=np.float32, apply_modifier=False,
             obj = obj.evaluated_get(depsgraph)
             mesh = obj.to_mesh()
             return np.array([vec2np(v.co) for v in mesh.vertices], dtype=dtype)
-        world_matrix = get_world_matrix_as_np(obj, dtype=dtype)  # (4, 4)
+        world_matrix = world_matrix2np(obj, dtype=dtype)  # (4, 4)
         return mesh2np(obj.data, world_matrix=world_matrix, geo_type=geo_type, dtype=dtype,
                        is_local=is_local, frame=frame, as_homogeneous=as_homogeneous)
     elif type(obj.data) == bpy.types.Armature:
@@ -91,20 +85,20 @@ def armature2np(armature: bpy.types.Object, dtype=np.float32, mode="dynamic",
             p.bone, kinematic_tree=kinematic_tree, armature=armature,
             dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
     elif mode in ["dynamic", "dynamic_from_origin", "dynamic_relative"]:
-        return np.array([get_posebone_as_np(
+        return np.array([posebone2np(
             p, kinematic_tree=kinematic_tree, armature=armature,
             dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
     else:
         raise NotImplementedError(f"Not supported the mode {mode}.")
 
 
-def get_world_matrix_as_np(obj: bpy.types.Object, dtype=np.float32, frame=bpy.context.scene.frame_current) -> np.ndarray:
+def world_matrix2np(obj: bpy.types.Object, dtype=np.float32, frame=bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
-    return get_location_as_np(obj, dtype, True, frame) @ get_rotation_as_np(obj, dtype, True, frame) @ get_scale_as_np(obj, dtype, True, frame)
+    return location2np(obj, dtype, True, frame) @ rotation2np(obj, dtype, True, frame) @ scale2np(obj, dtype, True, frame)
 
 
-def get_location_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-                       frame=bpy.context.scene.frame_current) -> np.ndarray:
+def location2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
+                frame=bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     location = vec2np(obj.location, dtype=dtype)
     if not to_matrix:
@@ -114,8 +108,8 @@ def get_location_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
     return mat  # (4, 4)
 
 
-def get_rotation_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-                       frame=bpy.context.scene.frame_current) -> np.ndarray:
+def rotation2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
+                frame=bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     if obj.rotation_mode == "QUATERNION":
         rot = vec2np(obj.rotation_quaternion, dtype=dtype)  # (3)
@@ -134,8 +128,8 @@ def get_rotation_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
     return mat[0]
 
 
-def get_scale_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-                    frame=bpy.context.scene.frame_current) -> np.ndarray:
+def scale2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
+             frame=bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     scale = vec2np(obj.scale)  # (3)
     if not to_matrix:
@@ -145,9 +139,9 @@ def get_scale_as_np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
     return mat
 
 
-def get_posebone_as_np(posebone, kinematic_tree=None, armature=None,
-                       dtype=np.float32, mode="dynamic",
-                       frame=bpy.context.scene.frame_current) -> np.ndarray:
+def posebone2np(posebone, kinematic_tree=None, armature=None,
+                dtype=np.float32, mode="dynamic",
+                frame=bpy.context.scene.frame_current) -> np.ndarray:
     # Get posebon in pose mode
     bpy.context.scene.frame_set(frame)
     if mode == "head":
@@ -163,7 +157,7 @@ def get_posebone_as_np(posebone, kinematic_tree=None, armature=None,
     elif mode == "dynamic_relative":
         if kinematic_tree is None or armature is None:
             raise Exception("Kinematic tree and armature should be inputted.")
-        dynamic_pose = get_rotation_as_np(posebone, dtype=dtype, to_matrix=True, frame=frame)
+        dynamic_pose = rotation2np(posebone, dtype=dtype, to_matrix=True, frame=frame)
         bone_id = list(armature.pose.bones).index(posebone)
         parent_id = kinematic_tree[bone_id]
         parent_pos = np.zeros(3, dtype=dtype) if parent_id == -1 else get_bone_as_np(armature.pose.bones[parent_id].bone, dtype=dtype, mode="head", frame=frame)
@@ -175,9 +169,9 @@ def get_posebone_as_np(posebone, kinematic_tree=None, armature=None,
             raise Exception("Kinematic tree and armature should be inputted.")
         bone_id = list(armature.pose.bones).index(posebone)
         parent_id = kinematic_tree[bone_id]
-        current_mat = get_posebone_as_np(posebone, kinematic_tree=kinematic_tree, armature=armature, dtype=dtype, mode="dynamic_relative", frame=frame)
-        parent_mat = get_posebone_as_np(armature.pose.bones[parent_id], kinematic_tree=kinematic_tree,
-                                        armature=armature, dtype=dtype, mode="dynamic", frame=frame) if parent_id != -1 else np.eye(4, dtype=dtype)
+        current_mat = posebone2np(posebone, kinematic_tree=kinematic_tree, armature=armature, dtype=dtype, mode="dynamic_relative", frame=frame)
+        parent_mat = posebone2np(armature.pose.bones[parent_id], kinematic_tree=kinematic_tree,
+                                 armature=armature, dtype=dtype, mode="dynamic", frame=frame) if parent_id != -1 else np.eye(4, dtype=dtype)
         return parent_mat @ current_mat
     else:
         raise NotImplementedError(f"mode {mode} isn't supported.")
@@ -241,11 +235,3 @@ def get_kinematic_tree(armature: bpy.types.Object):
     # Bone's parent index list (root node's parent idx: -1)
     return [-1 if bone.parent is None else list(armature.data.bones).index(bone.parent)
             for bone in armature.data.bones]
-
-
-def normalize_armature(armature: bpy.types.Object):
-    bpy.context.view_layer.objects.active = armature
-    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
-    for bone in armature.data.edit_bones:
-        bone.roll = 0.0
-    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)

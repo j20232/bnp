@@ -1,5 +1,8 @@
 import bpy
+import bnp.mathfunc
 import re
+
+# -------------------------- Remove from scene -----------------------------
 
 
 def remove_objects(prefix="debug"):
@@ -36,6 +39,53 @@ def clear_garbages():
     for block in bpy.data.collections:
         if block.users == 0:
             bpy.data.collections.remove(block)
+
+# -------------------------- Remove keyframes ------------------------------
+
+
+def remove_keyframe_from_object(obj, frame):
+    if obj.rotation_mode == "QUATERNION":
+        obj.keyframe_insert(data_path="rotation_quaternion", frame=frame)
+        obj.keyframe_delete(data_path="rotation_quaternion", frame=frame)
+    elif obj.rotation_mode == "AXIS_ANGLE":
+        obj.keyframe_insert(data_path="rotation_axis_angle", frame=frame)
+        obj.keyframe_delete(data_path="rotation_axis_angle", frame=frame)
+    else:
+        obj.keyframe_insert(data_path="rotation_euler", frame=frame)
+        obj.keyframe_delete(data_path="rotation_euler", frame=frame)
+    obj.keyframe_insert(data_path="location", frame=frame)
+    obj.keyframe_delete(data_path="location", frame=frame)
+    obj.keyframe_insert(data_path="scale", frame=frame)
+    obj.keyframe_delete(data_path="scale", frame=frame)
+
+
+def remove_keyframe_from_armature(armature, frame, exception_bone_indices=None):
+    exception_bone_indices = [] if exception_bone_indices is None else exception_bone_indices
+    for idx, bone in enumerate(armature.pose.bones):
+        if idx in exception_bone_indices:
+            continue
+        remove_keyframe_from_object(bone, frame)
+
+
+# --------------------------- Normalization ------------------------------
+
+def change_bone_rotation_mode(armature, mode, normalized=True):
+    armature.rotation_mode = mode
+    for bone in armature.pose.bones:
+        q = bnp.mathfunc.normalize_axis_angle(bone.rotation_axis_angle)
+        print(q)
+        assert False
+        bone.rotation_mode = mode
+
+
+def normalize_armature(armature: bpy.types.Object):
+    bpy.context.view_layer.objects.active = armature
+    bpy.ops.object.mode_set(mode='EDIT', toggle=False)
+    for bone in armature.data.edit_bones:
+        bone.roll = 0.0
+    bpy.ops.object.mode_set(mode='OBJECT', toggle=False)
+
+# -------------------------- Create objects ------------------------------
 
 
 def put_cubes(positions, prefix="debug", size=0.015, sampling_rate=1):

@@ -1,15 +1,32 @@
 import numpy as np
 
 
-def quaternion2R(q, dtype=np.float32, eps=1e-10):
-    # q: (num_of_quaternion, 4) [w, x, y, z]
+def vec2np(vec, dtype=np.float32) -> np.ndarray:
+    return np.array([v for v in vec], dtype=dtype)
+
+
+def mat2np(mat, dtype=np.float32) -> np.ndarray:
+    return np.array([vec2np(mat[rid]) for rid in range(len(mat.row))], dtype=dtype)
+
+
+def batch_identity(batch_num, size, dtype=np.float32):
+    R = np.zeros((batch_num, size, size), dtype=dtype)
+    for i in range(size):
+        R[:, i, i] = 1.0
+
+
+def normalize_quaternion(q, eps=1e-10):
     if len(q.shape) == 1:
         q = q.reshape(1, -1)
-    R = np.zeros((q.shape[0], 4, 4), dtype=dtype)
-    for i in range(4):
-        R[:, i, i] = 1.0
     q /= (np.sqrt(q[:, 0] ** 2 + q[:, 1] ** 2 +
                   q[:, 2] ** 2 + q[:, 3] ** 2) + eps).reshape(-1, 1)
+    return q
+
+
+def quaternion2R(q, dtype=np.float32, eps=1e-10):
+    # q: (num_of_quaternion, 4) [w, x, y, z]
+    q = normalize_quaternion(q, eps)
+    R = batch_identity(q.shape[0], 4, dtype=dtype)
     R[:, 0, 0] = 1 - 2 * q[:, 2] ** 2 - 2 * q[:, 3] ** 2  # 1 - 2y^2 - 2z^2
     R[:, 0, 1] = 2 * q[:, 1] * q[:, 2] + 2 * q[:, 0] * q[:, 3]  # 2xy + 2wz
     R[:, 0, 2] = 2 * q[:, 1] * q[:, 3] - 2 * q[:, 0] * q[:, 2]  # 2xz - 2wy
@@ -22,15 +39,18 @@ def quaternion2R(q, dtype=np.float32, eps=1e-10):
     return R  # (num_of_quaternion, 4, 4)
 
 
-def axis_angle2R(a, dtype=np.float32, eps=1e-10):
-    # a: (num_of_axis_angle, 3) [w, x, y, z]  w is represented as radian
+def normalize_axis_angle(a, eps=1e-10):
     if len(a.shape) == 1:
         a = a.reshape(1, -1)
-    R = np.zeros((a.shape[0], 4, 4), dtype=dtype)
-    for i in range(4):
-        R[:, i, i] = 1.0
     norm = np.sqrt(a[:, 1] ** 2 + a[:, 2] ** 2 + a[:, 3] ** 2) + eps
     a[:, 1:4] /= norm.reshape(-1, 1)
+    return a
+
+
+def axis_angle2R(a, dtype=np.float32, eps=1e-10):
+    # a: (num_of_axis_angle, 3) [w, x, y, z]  w is represented as radian
+    a = normalize_axis_angle(a, eps=eps)
+    R = batch_identity(q.shape[0], 4, dtype=dtype)
     cos = np.cos(a[:, 0])
     sin = np.sin(a[:, 0])
     R[:, 0, 0] = a[:, 1] ** 2 * (1 - cos) + cos            # n_1^2(1 - cos) + cos

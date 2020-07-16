@@ -40,7 +40,9 @@ if __name__ == '__main__':
                                                   dynamic_pose_from_origin, skinning_weights)
     # bnp.scene.put_cubes(vertices[:, 0:3], size=0.15)
 
-    armature = bnp.conversion.normalize_armature(amt)
+    bnp.scene.change_bone_rotation_mode(amt, "AXIS_ANGLE")
+    bnp.conversion.normalize_armature(amt)
+    bnp.scene.remove_keyframe_from_armature(amt, frame, [2, 3])
     kinematic_tree = bnp.conversion.get_kinematic_tree(amt)
     print("kinematic_tree: ", kinematic_tree)
 
