@@ -1,7 +1,8 @@
 bnp.objects.base
 =====================
 
-..py:function:: batch_identity(batch_num, size, dtype=np.float32) -> np.ndarray
+
+.. py:function:: batch_identity(batch_num, size, dtype=np.float32) -> np.ndarray
 
     Return batched identity matrices
 

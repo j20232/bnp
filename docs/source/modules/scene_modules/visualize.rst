@@ -1,6 +1,7 @@
 bnp.scene.visualize
 =====================
 
+
 .. py:function:: put_cubes(positions, prefix="debug", size=0.015, sampling_rate=1)
 
     Put cubes from np.ndarray whose shape should be (vtx_num, 3)
