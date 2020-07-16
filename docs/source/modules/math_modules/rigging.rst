@@ -5,12 +5,12 @@ bnp.math.rigging
 
 .. py:function:: linear_blend_skinning(vertices, rest_pose, dynamic_pose, skinning_weights) -> np.ndarray
 
-    Calculate new vertex positions with Linear Blend Skinning
+    Calculate new vertex positions with Linear Blend Skinning. Green box is deformed with Blender's LBS, white boxes are vertex positions calculated with this LBS.
 
     .. image:: ../../../../assets/screenshots/lbs.png
-        :scale: 40%
-        :height: 100px
-        :width: 200px
+        :scale: 100%
+        :height: 600px
+        :width: 800px
         :align: center
 
     :param np.ndarray vertices: homogeneous vertex positions (vtx_num, 4)

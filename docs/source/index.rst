@@ -4,9 +4,9 @@ bnp documentation
 ===============================
 
 .. image:: ../../assets/logo.png
-   :scale: 40%
-   :height: 100px
-   :width: 200px
+   :scale: 100%
+   :height: 600px
+   :width: 800px
    :align: center
 
 bnp is a numpy utility library for Blender.
