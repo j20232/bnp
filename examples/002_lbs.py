@@ -26,16 +26,17 @@ if __name__ == '__main__':
                             [0.0, 0.0, 1.0, 0.0],
                             [np.pi / 2, 1.0, 0.0, 0.0],
                             [0.0, 0.0, 1.0, 0.0]], dtype=np.float32)
-    bnp.insert_keyframe_to_armature(amt, start_frame, start_poses, translations=start_translations,
-                                    rotation_mode="rotation_axis_angle")
+    bnp.insert_keyframe_to_armature(amt, start_poses, translations=start_translations,
+                                    frame=start_frame, rotation_mode="rotation_axis_angle")
     end_translations = np.array([5, 0, 0], dtype=np.float32)
     end_poses = np.array([[0.0, 0.0, 1.0, 0.0],
                           [np.pi / 4, 0.0, 1.0, 0.0],
                           [np.pi / 2, 1.0, 0.0, 0.0],
                           [0.0, 0.0, 1.0, 0.0]], dtype=np.float32)
-    bnp.insert_keyframe_to_armature(amt, end_frame, end_poses, translations=end_translations,
-                                    rotation_mode="rotation_axis_angle")
+    bnp.insert_keyframe_to_armature(amt, end_poses, translations=end_translations,
+                                    frame=end_frame, rotation_mode="rotation_axis_angle")
 
+    # Get bones' info
     head_positions = bnp.armature2np(amt, mode="head")
     print("Head positions: ", head_positions)  # (joint_num, 3) at rest pose
 

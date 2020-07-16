@@ -102,7 +102,7 @@ def insert_keyframe_to_posebone(posebone, pose, translation=None,
     insert_keyframe(posebone, pose, datapath=rotation_mode, frame=frame)
 
 
-def insert_keyframe_to_armature(armature, frame, poses, translations=None,
+def insert_keyframe_to_armature(armature, poses, translations=None, frame=bpy.context.scene.frame_current,
                                 rotation_mode="rotation_axis_angle", exception_bone_indices=None,
                                 only_root_translation=True):
     change_rotation_modes_of_armature(armature, rotation_mode, normalized=True)

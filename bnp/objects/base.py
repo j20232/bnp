@@ -172,7 +172,7 @@ def change_rotation_mode(obj, rotation_mode, normalized=True):
         rotation_mode = "AXIS_ANGLE"
     elif rotation_mode == "rotation_quaternion":
         rotation_mode = "QUATERNION"
-    else:
+    elif rotation_mode == "rotation_euler":
         rotation_mode = "XYZ"
     obj.rotation_mode = rotation_mode
     if normalized and obj.rotation_mode == "AXIS_ANGLE":
