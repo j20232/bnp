@@ -5,7 +5,7 @@ bnp documentation
 
 .. image:: ../../assets/logo.png
    :scale: 100%
-   :height: 600px
+   :height: 400px
    :width: 800px
    :align: center
 
