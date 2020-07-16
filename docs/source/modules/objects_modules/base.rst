@@ -138,6 +138,14 @@ bnp.objects.base
     :param float eps: epsilon to avoid zero-division
     :return: `np.ndarray` rotation matrices (num_of_euler_angles, 4, 4)
 
+.. py:function:: insert_keyframe(obj, vec: np.ndarray, datapath: str, frame=bpy.context.scene.frame_current) -> np.ndarray
+
+    Insert keyframe to datapath in the frame
+
+    :param bpy.types.Object obj: obj
+    :param np.ndarray vec: location: (3), "rotation": (4) or (3) (radian), "scale": (3)
+    :param str datapath: "location", "rotation", "scale", "rotation_euler", "rotation_quaternion" or "rotation_axis_angle". In "rotation", this method inserts the vec to current rotation mode.
+    :param int frame: frame
 
 .. py:function:: get_keyframe_list(obj)
 
@@ -152,3 +160,10 @@ bnp.objects.base
     
     :param obj: `bpy.types.Object` or `bpy.types.PoseBone`
     :param int frame: the frame
+
+.. py:function:: remove_keyframes(obj, frames)
+
+    Remove the specified keyframes from obj
+    
+    :param obj: `bpy.types.Object` or `bpy.types.PoseBone`
+    :param list frames: frame list

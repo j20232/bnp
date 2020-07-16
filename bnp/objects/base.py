@@ -180,6 +180,34 @@ def get_keyframe_list(obj):
     return list(sorted(set(keyframes)))
 
 
+def insert_keyframe(obj, vec: np.ndarray, datapath: str, frame=bpy.context.scene.frame_current) -> np.ndarray:
+    bpy.context.scene.frame_set(frame)
+    if datapath == "rotation":
+        if obj.rotation_mode == "AXIS_ANGLE":
+            datapath = "rotation_axis_angle"
+        elif obj.rotation_mode == "QUATERNION":
+            datapath = "rotation_quaternion"
+        else:
+            datapath = "rotation_euler"
+
+    if datapath == "location":
+        obj.location = (vec[0], vec[1], vec[2])
+    elif datapath == "rotation_euler":
+        obj.rotation_mode = "XYZ"
+        obj.rotation_euler = (vec[0], vec[1], vec[2])
+    elif datapath == "rotation_quaternion":
+        obj.rotation_mode = "QUATERNION"
+        obj.rotation_quaternion = (vec[0], vec[1], vec[2], vec[3])
+    elif datapath == "rotation_axis_angle":
+        obj.rotation_mode = "AXIS_ANGLE"
+        obj.rotation_axis_angle = (vec[0], vec[1], vec[2], vec[3])
+    elif datapath == "scale":
+        obj.scale = (vec[0], vec[1], vec[2])
+    else:
+        raise NotImplementedError("Illegal datapath!")
+    obj.keyframe_insert(data_path=datapath, frame=frame)
+
+
 def remove_keyframe(obj, frame):
     if obj.rotation_mode == "QUATERNION":
         obj.keyframe_insert(data_path="rotation_quaternion", frame=frame)
@@ -194,3 +222,8 @@ def remove_keyframe(obj, frame):
     obj.keyframe_delete(data_path="location", frame=frame)
     obj.keyframe_insert(data_path="scale", frame=frame)
     obj.keyframe_delete(data_path="scale", frame=frame)
+
+
+def remove_keyframes(obj, frames):
+    for frame in frames:
+        remove_keyframe(obj, frame)
