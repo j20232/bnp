@@ -50,14 +50,15 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
 
 ## 🗄 Features
 
-- [x] Get translation matrices of `bpy.types.Object` and `bpy.types.Armature` as np.ndarray
-- [x] Get vertex positions of `bpy.types.Mesh` as np.ndarray
-- [x] Get skinning weights of `bpy.types.Object` as np.ndarray
+- [x] Numpy converter
+  - Translation matrices of `bpy.types.Object` and `bpy.types.Armature`
+  - Vertex positions of `bpy.types.Mesh`
+  - Skinning weights (vertex weights) of `bpy.types.Object`
+  - Blend shapes (shape keys) of `bpy.types.Object`
 - [x] Simple geometry importer/exporter
 - [x] Clear unused objects in your Scene
 - [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/assets/screenshots/lbs.png)
-- [ ] Get shapekeys (blend shapes)
-- [ ] Set np.ndarray to Blender's inspector
+
 
 ## 📄 Documentation
 
