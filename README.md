@@ -12,14 +12,26 @@ Currently, work in progress. 🥺
 
 (work in the progress)
 
-1. Add pip to your Bender
-2. Install `numpy` with the Blender's pip
-3. Copy `bnp/bnp` to `$YOUR_BLENDER_PATH/scripts/addons_contrib` manually
+1. Copy `bnp/bnp` to `$YOUR_BLENDER_PATH/scripts/addons_contrib` manually
 
-e.g. `$YOUR_BLENDER_PATH`: `C:/Program Files/Blender Foundation/Blender 2.83/2.83/scripts/addons_contrib`
+e.g. `$YOUR_BLENDER_PATH`: `C:/Program Files/Blender Foundation/Blender 2.83/2.83`
 
 - OK: C:/Program Files/Blender Foundation/Blender 2.83/2.83/scripts/addons_contrib/bnp/__init__.py
 - NG: C:/Program Files/Blender Foundation/Blender 2.83/2.83/scripts/addons_contrib/bnp/bnp/__init__.py
+
+### (Appendix) how to install numpy
+
+If you have some errors when you import numpy, please run following commands.
+
+1. Download [get-pip.py](https://bootstrap.pypa.io/get-pip.py) in `$YOUR_FAVORITE_DIRECTORY`
+2. `% cd $YOUR_FAVORITE_DIRECTORY`
+3. `% $BLENDER_PYTHON_PATH/python get-pip.py` with administrator mode or `sudo`
+4. `% $BLENDER_PIP_PATH/pip install numpy` with administrator mode or `sudo`
+
+e.g.
+
+- `$YOUR_FAVORITE_DIRECTORY`: `C:/Users/YOUR_ACCOUNT/Downloads`
+- `$BLENDER_PYTHON_PATH`: `C:/Program Files/Blender Foundation/Blender 2.83/2.83/python/bin`
 
 ## 🎲 Tiny example
 
@@ -32,7 +44,8 @@ bnp.scene.put_cubes(vertices)
 
 You can find more examples at https://github.com/j20232/bnp/tree/master/examples
 
-To check examples, please open `*.blend`([sample scenes](https://github.com/j20232/bnp/tree/master/samples)) files in **your file browser**.  
+To check examples, please open `*.blend`([sample scenes](https://github.com/j20232/bnp/tree/master/samples)) files in **your file browser**.
+
 Don't open `*.blend` files from `Blender.exe` because this library doesn't work due to the permission.
 
 ## 🗄 Features
