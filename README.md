@@ -25,7 +25,7 @@ e.g. `$YOUR_BLENDER_PATH`: `C:/Program Files/Blender Foundation/Blender 2.83/2.8
 
 ```py
 import bnp
-vertices = bnp.conversion.objname2np("Cube")
+vertices = bnp.objname2np("Cube")
 print(vertices)  # (vtx_num, 3)
 bnp.scene.put_cubes(vertices)
 ```

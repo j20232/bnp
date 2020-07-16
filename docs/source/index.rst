@@ -21,9 +21,8 @@ The repository is at https://github.com/j20232/bnp.
    :maxdepth: 1
    :caption: Package Reference
 
-   modules/conversion
-   modules/io
-   modules/mathfunc
+   modules/math
+   modules/objects
    modules/scene
 
 Indices and Tables

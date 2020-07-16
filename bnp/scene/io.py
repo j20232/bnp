@@ -1,6 +1,5 @@
 import bpy
 import os
-import numpy as np
 
 
 def import_geom(filepath: str, keep_vertex_order=True, **kwargs):

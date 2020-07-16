@@ -15,34 +15,34 @@ if __name__ == '__main__':
 
     obj = bpy.context.scene.objects["Cube"]
 
-    vertices = bnp.conversion.obj2np(obj)
+    vertices = bnp.obj2np(obj)
     print("Vertex positions: ", vertices)  # (vtx_num, 3)
 
-    world_matrix = bnp.conversion.get_world_matrix_as_np(obj)
+    world_matrix = bnp.world_matrix2np(obj)
     print("world_matrix: ", world_matrix)
 
     # Location
-    location = bnp.conversion.get_location_as_np(obj)
+    location = bnp.location2np(obj)
     print("Location: ", location)
-    loc_matrix = bnp.conversion.get_location_as_np(obj, to_matrix=True)
+    loc_matrix = bnp.location2np(obj, to_matrix=True)
     print("Location matrix: ", loc_matrix)
 
     # Rotation
-    rotation = bnp.conversion.get_rotation_as_np(obj)
+    rotation = bnp.rotation2np(obj)
     print("Rotation: ", rotation)
-    rot_matrix = bnp.conversion.get_rotation_as_np(obj, to_matrix=True)
+    rot_matrix = bnp.rotation2np(obj, to_matrix=True)
     print("Rotation matrix: ", rot_matrix)
 
     # Scale
-    scale = bnp.conversion.get_scale_as_np(obj)
+    scale = bnp.scale2np(obj)
     print("Scale: ", scale)
-    scale_matrix = bnp.conversion.get_scale_as_np(obj, to_matrix=True)
+    scale_matrix = bnp.scale2np(obj, to_matrix=True)
     print("Scale matrix: ", scale_matrix)
 
     bnp.scene.put_cubes(vertices)
 
     """
-    bnp.io.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.obj"), obj)
-    bnp.io.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.fbx"), obj)
-    bnp.io.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.glb"), obj)
+    bnp.scene.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.obj"), obj)
+    bnp.scene.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.fbx"), obj)
+    bnp.scene.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.glb"), obj)
     """

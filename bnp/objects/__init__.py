@@ -1,14 +1,15 @@
-from bnp import math
-from bnp import objects
-from bnp import scene
+from bnp.objects import base
+from bnp.objects import armature
+from bnp.objects import mesh
+from bnp.objects import obj
 
-__version__ = '0.1.0'
 
 if True:
     import importlib
-    importlib.reload(math)
-    importlib.reload(objects)
-    importlib.reload(scene)
+    importlib.reload(base)
+    importlib.reload(armature)
+    importlib.reload(mesh)
+    importlib.reload(obj)
 
     # base
     from bnp.objects.base import batch_identity, vec2np, mat2np, world_matrix2np, location2np, rotation2np, scale2np

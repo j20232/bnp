@@ -1,4 +1,14 @@
+import bpy
 import numpy as np
+
+# ----------------------------------- Conversion -----------------------------------------
+
+
+def batch_identity(batch_num, size, dtype=np.float32):
+    R = np.zeros((batch_num, size, size), dtype=dtype)
+    for i in range(size):
+        R[:, i, i] = 1.0
+    return R
 
 
 def vec2np(vec, dtype=np.float32) -> np.ndarray:
@@ -9,10 +19,54 @@ def mat2np(mat, dtype=np.float32) -> np.ndarray:
     return np.array([vec2np(mat[rid]) for rid in range(len(mat.row))], dtype=dtype)
 
 
-def batch_identity(batch_num, size, dtype=np.float32):
-    R = np.zeros((batch_num, size, size), dtype=dtype)
-    for i in range(size):
-        R[:, i, i] = 1.0
+def world_matrix2np(obj: bpy.types.Object, dtype=np.float32, frame=bpy.context.scene.frame_current) -> np.ndarray:
+    bpy.context.scene.frame_set(frame)
+    return location2np(obj, dtype, True, frame) @ rotation2np(obj, dtype, True, frame) @ scale2np(obj, dtype, True, frame)
+
+
+def location2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
+                frame=bpy.context.scene.frame_current) -> np.ndarray:
+    bpy.context.scene.frame_set(frame)
+    location = vec2np(obj.location, dtype=dtype)
+    if not to_matrix:
+        return location  # (3)
+    mat = np.eye(4, dtype=dtype)
+    mat[0:3, 3] = location
+    return mat  # (4, 4)
+
+
+def rotation2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
+                frame=bpy.context.scene.frame_current) -> np.ndarray:
+    bpy.context.scene.frame_set(frame)
+    if obj.rotation_mode == "QUATERNION":
+        rot = vec2np(obj.rotation_quaternion, dtype=dtype)  # (3)
+    elif obj.rotation_mode == "AXIS_ANGLE":
+        rot = vec2np(obj.rotation_axis_angle, dtype=dtype)  # (4)
+    else:
+        rot = vec2np(obj.rotation_euler, dtype=dtype)  # (3)
+    if not to_matrix:
+        return rot
+    if obj.rotation_mode == "QUATERNION":
+        mat = quaternion2R(rot, dtype=dtype)
+    elif obj.rotation_mode == "AXIS_ANGLE":
+        mat = axis_angle2R(rot, dtype=dtype)
+    else:
+        mat = euler2R(rot, obj.rotation_mode, dtype=dtype)
+    return mat[0]
+
+
+def scale2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
+             frame=bpy.context.scene.frame_current) -> np.ndarray:
+    bpy.context.scene.frame_set(frame)
+    scale = vec2np(obj.scale)  # (3)
+    if not to_matrix:
+        return scale
+    mat = np.eye(4, dtype=dtype)
+    mat[0:3, 0:3] = np.diag(scale)
+    return mat
+
+
+# ----------------------------------- Rotation -----------------------------------------
 
 
 def normalize_quaternion(q, eps=1e-10):
@@ -21,6 +75,14 @@ def normalize_quaternion(q, eps=1e-10):
     q /= (np.sqrt(q[:, 0] ** 2 + q[:, 1] ** 2 +
                   q[:, 2] ** 2 + q[:, 3] ** 2) + eps).reshape(-1, 1)
     return q
+
+
+def normalize_axis_angle(a, eps=1e-10):
+    if len(a.shape) == 1:
+        a = a.reshape(1, -1)
+    norm = np.sqrt(a[:, 1] ** 2 + a[:, 2] ** 2 + a[:, 3] ** 2) + eps
+    a[:, 1:4] /= norm.reshape(-1, 1)
+    return a
 
 
 def quaternion2R(q, dtype=np.float32, eps=1e-10):
@@ -39,18 +101,10 @@ def quaternion2R(q, dtype=np.float32, eps=1e-10):
     return R  # (num_of_quaternion, 4, 4)
 
 
-def normalize_axis_angle(a, eps=1e-10):
-    if len(a.shape) == 1:
-        a = a.reshape(1, -1)
-    norm = np.sqrt(a[:, 1] ** 2 + a[:, 2] ** 2 + a[:, 3] ** 2) + eps
-    a[:, 1:4] /= norm.reshape(-1, 1)
-    return a
-
-
 def axis_angle2R(a, dtype=np.float32, eps=1e-10):
     # a: (num_of_axis_angle, 3) [w, x, y, z]  w is represented as radian
     a = normalize_axis_angle(a, eps=eps)
-    R = batch_identity(q.shape[0], 4, dtype=dtype)
+    R = batch_identity(a.shape[0], 4, dtype=dtype)
     cos = np.cos(a[:, 0])
     sin = np.sin(a[:, 0])
     R[:, 0, 0] = a[:, 1] ** 2 * (1 - cos) + cos            # n_1^2(1 - cos) + cos
@@ -99,22 +153,20 @@ def euler2R(e, mode, dtype=np.float32):
     else:
         NotImplementedError(f"mode {mode} is not supported.")
 
+# ----------------------------------- Keyframe -----------------------------------------
 
-def linear_blend_skinning(vertices, rest_pose, dynamic_pose, skinning_weights):
-    """Calculate new vertex positions
 
-    Args:
-        vertices (np.ndarray): homogeneous vertex positions (vtx_num, 4)
-        rest_pose (np.ndarray): translation matices at rest pose (joint_num, 4, 4)
-        dynamic_pose (np.ndarray): translation matrices at a specified frame (joint_num, 4, 4)
-        skinning_weights (np.ndarray): skinning weights (equal to vertex weights) (vtx_num, joint_num)
-
-    Returns:
-        np.ndarray: new vertex positions at homogeneous coordinates (vtx_num, 4)
-    """
-    vertices = vertices.reshape(-1, 1, 4)
-    inv_rest_pose = np.linalg.inv(rest_pose).transpose(0, 2, 1)
-    dynamic_pose = dynamic_pose.transpose(0, 2, 1)
-    skinning_weights = skinning_weights.reshape(len(vertices), -1, 1, 1)
-    lbs_matrices = np.sum(skinning_weights * inv_rest_pose @ dynamic_pose, axis=1)
-    return (vertices @ lbs_matrices)[:, 0]  # (vtx_num, 4)
+def remove_keyframe(obj, frame):
+    if obj.rotation_mode == "QUATERNION":
+        obj.keyframe_insert(data_path="rotation_quaternion", frame=frame)
+        obj.keyframe_delete(data_path="rotation_quaternion", frame=frame)
+    elif obj.rotation_mode == "AXIS_ANGLE":
+        obj.keyframe_insert(data_path="rotation_axis_angle", frame=frame)
+        obj.keyframe_delete(data_path="rotation_axis_angle", frame=frame)
+    else:
+        obj.keyframe_insert(data_path="rotation_euler", frame=frame)
+        obj.keyframe_delete(data_path="rotation_euler", frame=frame)
+    obj.keyframe_insert(data_path="location", frame=frame)
+    obj.keyframe_delete(data_path="location", frame=frame)
+    obj.keyframe_insert(data_path="scale", frame=frame)
+    obj.keyframe_delete(data_path="scale", frame=frame)
