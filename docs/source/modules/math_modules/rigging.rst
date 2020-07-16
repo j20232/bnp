@@ -2,9 +2,16 @@ bnp.math.rigging
 =====================
 
 
+
 .. py:function:: linear_blend_skinning(vertices, rest_pose, dynamic_pose, skinning_weights) -> np.ndarray
 
     Calculate new vertex positions with Linear Blend Skinning
+
+    .. image:: ../../../../assets/screenshots/lbs.png
+        :scale: 40%
+        :height: 100px
+        :width: 200px
+        :align: center
 
     :param np.ndarray vertices: homogeneous vertex positions (vtx_num, 4)
     :param np.ndarray rest_pose: translation matices at rest pose (joint_num, 4, 4)

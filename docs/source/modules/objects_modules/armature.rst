@@ -51,13 +51,63 @@ bnp.objects.armature
     :param armature: `bpy.types.Object` or `bpy.types.Armature`
 
 
+.. py:function:: insert_keyframe_to_posebone(posebone, pose, translation=None, frame=bpy.context.scene.frame_current, rotation_mode="rotation_axis_angle")
+
+    Insert a keyframe to a posebone
+
+    :param bpy.types.PoseBone posebone: posebone
+    :param np.ndarray pose: pose (3) or (4)
+    :param np.ndarray translation: translation (3), (4) or None
+    :param int frame: keyframe
+    :param str rotation_mode: "rotation_axis_angle" (equal to "AXIS_ANGLE"), "rotation_quaternion" (equal to "QUATERNION") or "rotation_euler" (equal to "XYZ")
+
+
+.. py:function:: insert_keyframe_to_armature(armature, poses, translations=None, frame=bpy.context.scene.frame_current, rotation_mode="rotation_axis_angle", exception_bone_indices=None, only_root_translation=True)
+
+    Insert a keyframe to an harmature
+
+    :param bpy.types.Object armature: armature which has `bpy.types.Armature`
+    :param np.ndarray poses: poses (num_of_joints, 3) or (num_of_joints, 4)
+    :param np.ndarray translations: translations (num_of_joints, 3), (1, 3) or None
+    :param int frame: keyframe
+    :param str rotation_mode: "rotation_axis_angle" (equal to "AXIS_ANGLE"), "rotation_quaternion" (equal to "QUATERNION") or "rotation_euler" (equal to "XYZ")
+    :param list exception_bone_indices: bone indices not to insert keyframes
+    :param bool only_root_translation: whether to insert only root translation or not
+
+
+.. py:function:: remove_keyframe_from_posebone(posebone, frame, exception_bone_indices=None)
+
+    Remove a keyframe from an input posebone
+
+    :param bpy.types.PoseBone posebone: posebone
+    :param int frame: frame
+
+
 .. py:function:: remove_keyframe_from_armature(armature, frame, exception_bone_indices=None)
 
     Remove a keyframe from an input armature
 
-    :param bpy.types.Object armature: armature
+    :param bpy.types.Object armature: armature which has `bpy.types.Armature`
     :param int frame: frame
     :param list exception_bone_indices: bone index list not to remove keyframes (optional)
+
+
+.. py:function:: remove_keyframes_from_armature(armature, frames, exception_bone_indices=None)
+
+    Remove a keyframe from an input armature
+
+    :param bpy.types.Object armature: armature which has `bpy.types.Armature`
+    :param list frames: frame list
+    :param list exception_bone_indices: bone index list not to remove keyframes (optional)
+
+
+.. py:function:: change_rotation_modes_of_armature(armature, rotation_mode, normalized=True)
+
+    Change rotation modes of an input armature and posebones in the armature
+
+    :param bpy.types.Object armature: armature which has `bpy.types.Armature`
+    :param str rotation_mode: "rotation_axis_angle" (equal to "AXIS_ANGLE"), "rotation_quaternion" (equal to "QUATERNION") or "rotation_euler" (equal to "XYZ")
+    :param bool normalized: whether to normalize axis_angle or quaternion
 
 
 .. py:function:: normalize_roll(armature: bpy.types.Object)

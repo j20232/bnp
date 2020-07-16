@@ -138,6 +138,24 @@ bnp.objects.base
     :param float eps: epsilon to avoid zero-division
     :return: `np.ndarray` rotation matrices (num_of_euler_angles, 4, 4)
 
+
+.. py:function:: change_rotation_mode(obj, rotation_mode, normalized=True)
+
+    Change current rotation mode of obj
+
+    :param bpy.types.Object obj: object
+    :param str rotation_mode: "rotation_axis_angle" (equal to "AXIS_ANGLE"), "rotation_quaternion" (equal to "QUATERNION") or "rotation_euler" (equal to "XYZ")
+    :param bool normalized: whether to normalize axis_angle or quaternion
+
+
+.. py:function:: get_keyframe_list(obj)
+
+    Get a sorted list which contains keyframes of obj. If there is no keyframes, return an empty list.
+
+    :param bpy.types.Object obj: obj
+    :return: `list` sorted with keyframes (no duplication)
+
+
 .. py:function:: insert_keyframe(obj, vec: np.ndarray, datapath: str, frame=bpy.context.scene.frame_current) -> np.ndarray
 
     Insert keyframe to datapath in the frame
@@ -147,12 +165,6 @@ bnp.objects.base
     :param str datapath: "location", "rotation", "scale", "rotation_euler", "rotation_quaternion" or "rotation_axis_angle". In "rotation", this method inserts the vec to current rotation mode.
     :param int frame: frame
 
-.. py:function:: get_keyframe_list(obj)
-
-    Get a sorted list which contains keyframes of obj. If there is no keyframes, return an empty list.
-
-    :param bpy.types.Object obj: obj
-    :return: `list` sorted with keyframes (no duplication)
 
 .. py:function:: remove_keyframe(obj, frame)
 
@@ -160,6 +172,7 @@ bnp.objects.base
     
     :param obj: `bpy.types.Object` or `bpy.types.PoseBone`
     :param int frame: the frame
+
 
 .. py:function:: remove_keyframes(obj, frames)
 
