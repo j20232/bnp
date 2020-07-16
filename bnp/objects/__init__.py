@@ -12,7 +12,7 @@ if True:
     importlib.reload(obj)
 
     # base
-    from bnp.objects.base import batch_identity, vec2np, mat2np, world_matrix2np, location2np, rotation2np, scale2np
+    from bnp.objects.base import batch_identity, vec2np, mat2np, vertices2np, collection2np, world_matrix2np, location2np, rotation2np, scale2np
     from bnp.objects.base import normalize_quaternion, normalize_axis_angle, quaternion2R, axis_angle2R, euler2R
     from bnp.objects.base import remove_keyframe
 

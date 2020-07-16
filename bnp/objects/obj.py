@@ -1,7 +1,8 @@
 import bpy
+import bmesh
 from mathutils import Vector, Matrix
 import numpy as np
-from bnp.objects.base import vec2np, mat2np, world_matrix2np
+from bnp.objects.base import vec2np, mat2np, vertices2np, collection2np, world_matrix2np
 from bnp.objects.mesh import mesh2np
 from bnp.objects.armature import armature2np
 
@@ -17,6 +18,10 @@ def any2np(obj, dtype=np.float32, **kwargs) -> np.ndarray:
         return objname2np(obj, dtype=dtype, **kwargs)
     elif type(obj) == bpy.types.Mesh:
         return mesh2np(obj, dtype=dtype)
+    elif type(obj) == bmesh.types.BMVertSeq:
+        return vertices2np(obj, dtype)
+    elif type(obj) == bpy.types.bpy_prop_collection:
+        return collection2np(obj, dtype)
     else:
         raise NotImplementedError(f"{type(obj)} is not supported with any2np.")
 

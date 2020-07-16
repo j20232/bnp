@@ -30,6 +30,24 @@ bnp.objects.base
     :return: Row-major `np.ndarray` (matrix_size)
 
 
+.. py:function:: vertices2np(vertices, dtype=np.float32) -> np.ndarray
+
+    Convert vertices (`bpy.types.bpy_prop_collection` or `bmesh.types.BMVertSeq`) to `np.ndarray`
+
+    :param vertices: `bpy.types.bpy_prop_collection` or `bmesh.types.BMVertSeq`
+    :param dtype: dtype
+    :return: `np.ndarray` (vtx_num, 3)
+
+
+ .. py:function:: collection2np(obj, dtype=np.float32) -> np.ndarray
+
+    Convert vertices (`bpy.types.bpy_prop_collection`) to `np.ndarray`
+
+    :param obj: `bpy.types.bpy_prop_collection`
+    :param dtype: dtype
+    :return: `np.ndarray` (vtx_num, 3)
+   
+
 .. py:function:: world_matrix2np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current) -> np.ndarray
 
     Get world matrix of `bpy.types.Object` as `np.ndarray` (row major). This function is equal to `mat2np(obj.matrix_world)`.

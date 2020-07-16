@@ -19,6 +19,19 @@ def mat2np(mat, dtype=np.float32) -> np.ndarray:
     return np.array([vec2np(mat[rid]) for rid in range(len(mat.row))], dtype=dtype)
 
 
+def vertices2np(vertices, dtype=np.float32) -> np.ndarray:
+    np_verts = np.zeros(len(vertices, 3), dtype=dtype)
+    for idx, v in enumerate(vertices):
+        np_verts[idx] = np.array([v.co.x, v.co.y, v.co.z], dtype=dtype)
+    return np_verts
+
+
+def collection2np(obj, dtype=np.float32):
+    if type(obj[0]) == bpy.types.MeshVertex:
+        return vertices2np(obj, dtype)
+    raise NotImplementedError(type(obj[0]))
+
+
 def world_matrix2np(obj: bpy.types.Object, dtype=np.float32, frame=bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     return location2np(obj, dtype, True, frame) @ rotation2np(obj, dtype, True, frame) @ scale2np(obj, dtype, True, frame)
