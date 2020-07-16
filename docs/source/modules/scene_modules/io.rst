@@ -1,5 +1,6 @@
-bnp.io
+bnp.scene.io
 =====================
+
 
 .. py:function:: import_geom(filepath, obj, keep_vertex_order=True, **kwargs)
 
