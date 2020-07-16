@@ -139,6 +139,13 @@ bnp.objects.base
     :return: `np.ndarray` rotation matrices (num_of_euler_angles, 4, 4)
 
 
+.. py:function:: get_keyframe_list(obj)
+
+    Get a sorted list which contains keyframes of obj. If there is no keyframes, return an empty list.
+
+    :param bpy.types.Object obj: obj
+    :return: `list` sorted with keyframes (no duplication)
+
 .. py:function:: remove_keyframe(obj, frame)
 
     Remove the specified keyframe from obj

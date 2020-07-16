@@ -169,6 +169,17 @@ def euler2R(e, mode, dtype=np.float32):
 # ----------------------------------- Keyframe -----------------------------------------
 
 
+def get_keyframe_list(obj):
+    if obj.animation_data.action is None:
+        return []
+    keyframes = []
+    for fcurve in obj.animation_data.action.fcurves:
+        for keyframe in fcurve.keyframe_points:
+            # keyframe: Vector(keyframe, value)
+            keyframes.append(int(keyframe.co[0]))
+    return list(sorted(set(keyframes)))
+
+
 def remove_keyframe(obj, frame):
     if obj.rotation_mode == "QUATERNION":
         obj.keyframe_insert(data_path="rotation_quaternion", frame=frame)

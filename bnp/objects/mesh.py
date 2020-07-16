@@ -67,7 +67,7 @@ def normalize_skinning_weights(obj):
 # ----------------------------------- Selection -----------------------------------------
 
 
-def get_active_indices(obj: bpy.types.Object):
+def get_active_vertex_indices(obj: bpy.types.Object):
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.mode_set(mode="EDIT")
     bm = bmesh.from_edit_mesh(obj.data)
@@ -75,4 +75,64 @@ def get_active_indices(obj: bpy.types.Object):
     indices = [v.index for v in reversed(bm.verts) if v.select]
     bm.free()
     bpy.ops.object.mode_set(mode="OBJECT")
-    return indices
+    return indices  # vertex indices
+
+
+# ----------------------------------- Shape keys ----------------------------------------
+
+
+def remove_shape_keys(obj, all=True):
+    # Shape key is equal to blend shape
+    bpy.context.view_layer.objects.active = obj
+    if bpy.context.object.data.shape_keys is not None:
+        bpy.ops.object.shape_key_remove(all=all)
+
+
+def add_shape_key(obj, name, blend_weight=1.0, vertices=None,
+                  slider_min=0.0, slider_max=1.0, from_mix=False):
+    # Shape key is equal to blend shape
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.shape_key_add(from_mix=from_mix)
+    key_block = bpy.data.shape_keys["Key"].key_blocks[bpy.context.object.active_shape_key_index]
+    key_block.name = name
+    key_block.slider_min = slider_min
+    key_block.slider_max = slider_max
+    adjust_shape_key(obj, name, blend_weight, vertices)
+
+
+def adjust_shape_key(obj, name, blend_weight, vertices=None):
+    bpy.context.view_layer.objects.active = obj
+    key_block = bpy.data.shape_keys["Key"].key_blocks[name]
+    key_block.value = blend_weight
+    if vertices is not None:
+        bpy.ops.object.mode_set(mode="EDIT")
+        bm = bmesh.from_edit_mesh(obj.data)
+        bm.verts.ensure_lookup_table()
+        for idx in range(len(bm.verts)):
+            bm.verts[idx].co = (vertices[idx][0], vertices[idx][1], vertices[idx][2])
+        mesh = obj.to_mesh()
+        bm.to_mesh(mesh)
+        bm.free()
+        bpy.ops.object.mode_set(mode="OBJECT")
+
+
+def insert_keyframes_to_shape_keys(obj, blend_weights):
+    bpy.context.view_layer.objects.active = obj
+    for str_frame in blend_weights.keys():
+        frame = int(str_frame)
+        for block_name in blend_weights[str_frame]:
+            key_block = bpy.data.shape_keys["Key"].key_blocks[block_name]
+            key_block.value = blend_weights[str_frame][block_name]
+            key_block.keyframe_insert("value", frame=frame)
+
+
+def get_keyframe_of_shapekeys(obj):
+    bpy.context.view_layer.objects.active = obj
+    if obj.data.shape_keys is None or obj.data.shape_keys.animation_data.action is None:
+        return []
+    keyframes = []
+    for fcurve in obj.data.shape_keys.animation_data.action.fcurves:
+        for keyframe in fcurve.keyframe_points:
+            # keyframe: Vector(keyframe, value)
+            keyframes.append(int(keyframe.co[0]))
+    return list(sorted(set(keyframes)))
