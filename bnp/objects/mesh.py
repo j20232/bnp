@@ -42,6 +42,28 @@ def skinning_weights2np(obj: bpy.types.Object, dtype=np.float32) -> np.ndarray:
         skinning_weights[vid] /= sum(skinning_weights[vid])
     return skinning_weights  # (vtx_num, joint_num)
 
+# -------------------------------- Normalization ----------------------------------------
+
+
+def normalize_skinning_weights(obj):
+    bpy.context.view_layer.objects.active = obj
+    bpy.ops.object.mode_set(mode="EDIT")
+    bpy.ops.mesh.select_mode(type="VERT")
+    bpy.ops.mesh.select_all(action="DESELECT")
+
+    bm = bmesh.from_edit_mesh(obj.data)
+    bm.verts.ensure_lookup_table()
+    for idx in range(len(bm.verts)):
+        bm.select_history.add(bm.verts[idx])
+        bpy.ops.object.vertex_weight_normalize_active_vertex()
+        bpy.ops.mesh.select_all(action="DESELECT")
+
+    mesh = obj.to_mesh()
+    bm.to_mesh(mesh)
+    bm.free()
+    bpy.ops.object.mode_set(mode="OBJECT")
+    return mesh
+
 # ----------------------------------- Selection -----------------------------------------
 
 

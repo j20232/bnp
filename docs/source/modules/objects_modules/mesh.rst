@@ -24,6 +24,14 @@ bnp.objects.mesh
     :return: `np.ndarray` skinning weights (vtx_num, joint_num)
 
 
+.. py:function:: normalize_skinning_weights(obj: bpy.types.Object) -> bpy.types.Mesh
+
+    Get a mesh after normalization of skinning weights (vertex weights in Blender)
+
+    :param bpy.types.Object obj: object which has `bpy.types.Mesh`
+    :return: `bpy.types.Mesh` mesh after normalization of skinning weights
+
+
 .. py:function:: get_active_indices(obj: bpy.types.Object) -> list
 
     Get active indices from the mesh of the input obj

@@ -22,7 +22,7 @@ if True:
     from bnp.objects.armature import change_bone_rotation_mode, normalize_roll
 
     # mesh
-    from bnp.objects.mesh import mesh2np, skinning_weights2np, get_active_indices
+    from bnp.objects.mesh import mesh2np, skinning_weights2np, normalize_skinning_weights, get_active_indices
 
     # obj
     from bnp.objects.obj import any2np, obj2np, objname2np
