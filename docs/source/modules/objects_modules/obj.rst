@@ -5,7 +5,7 @@ bnp.objects.obj
 
     Convert any objects in Blender to `np.ndarray` at current frame.
 
-    :param obj: any object such as `mathutils.Vector`, `mathutils.Matrix`, and so on
+    :param obj: any object such as `mathutils.Vector`, `mathutils.Matrix`, `bpy.types.Object`, `bpy.types.Mesh` or str (name of an object in the Scene)
     :param dtype: dtype
     :param kwargs: other attrs
     :return: `np.ndarray`
@@ -23,7 +23,7 @@ bnp.objects.obj
     :param str geo_type: "position" or "normal". This is used when `obj.data == bpy.types.Mesh`.
     :param bool is_local: whether to get positions as local coordinates. This is used when `obj.data == bpy.types.Mesh`.
     :param bool as_homogeneous: whether to get positions as homogeneous or not. This is used when `obj.data == bpy.types.Mesh`.
-    :param str mode: "head", "tail", "length", "rest_from_origin", "rest", "rest_relative", "dynamic", "dynamic_from_origin", "dynamic_relative". This is used when `obj.data == bpy.types.Armature`.
+    :param str mode: "head", "tail", "length", "rest", "dynamic".  This is used when `obj.data == bpy.types.Armature`.
     :return: `np.ndarray`
 
 
@@ -39,5 +39,5 @@ bnp.objects.obj
     :param str geo_type: "position" or "normal". This is used when `obj.data == bpy.types.Mesh`.
     :param bool is_local: whether to get positions as local coordinates. This is used when `obj.data == bpy.types.Mesh`.
     :param bool as_homogeneous: whether to get positions as homogeneous or not. This is used when `obj.data == bpy.types.Mesh`.
-    :param str mode: "head", "tail", "length", "rest_from_origin", "rest", "rest_relative", "dynamic", "dynamic_from_origin", "dynamic_relative". This is used when `obj.data == bpy.types.Armature`.
+    :param str mode: "head", "tail", "length", "rest", "dynamic". This is used when `obj.data == bpy.types.Armature`.
     :return: `np.ndarray`

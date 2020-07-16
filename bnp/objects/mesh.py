@@ -45,7 +45,7 @@ def skinning_weights2np(obj: bpy.types.Object, dtype=np.float32) -> np.ndarray:
 # ----------------------------------- Selection -----------------------------------------
 
 
-def get_active_indices(obj):
+def get_active_indices(obj: bpy.types.Object):
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.mode_set(mode="EDIT")
     bm = bmesh.from_edit_mesh(obj.data)

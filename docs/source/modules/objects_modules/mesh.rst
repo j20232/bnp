@@ -15,10 +15,17 @@ bnp.objects.mesh
     :return: `np.ndarray` (vertex_number, 3) or (vertex_number, 4)
 
 
-.. py:function:: get_skinning_weights_as_np(obj: bpy.types.Object, dtype=np.float32) -> np.ndarray
+.. py:function:: skinning_weights2np(obj: bpy.types.Object, dtype=np.float32) -> np.ndarray
 
     Get skinning weights (vertex weights in Blender) as `np.ndarray`
 
     :param bpy.types.Object obj: object which has `bpy.types.Mesh`
     :param dtype: dtype
     :return: `np.ndarray` skinning weights (vtx_num, joint_num)
+
+
+.. py:function:: get_active_indices(obj: bpy.types.Object)
+
+    Get active indices from the mesh of the input obj
+
+    :param bpy.types.Object obj: object which has `bpy.types.Mesh`

@@ -17,10 +17,10 @@ def posebone_basis(dtype=np.float32):
 def armature2np(armature: bpy.types.Object, dtype=np.float32, mode="dynamic",
                 frame=bpy.context.scene.frame_current, rotation_mode=None) -> np.ndarray:
     normalize_roll(armature)
-    if mode in ["head", "tail", "length", "rest_from_origin", "rest"]:
+    if mode in ["head", "tail", "length", "rest"]:
         return np.array([bone2np(
             p.bone, dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
-    elif mode in ["dynamic", "dynamic_from_origin"]:
+    elif mode in ["dynamic"]:
         return np.array([posebone2np(
             p, dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
     elif mode in ["rotation"]:
@@ -83,10 +83,12 @@ def bone2np(bone,
 
 # --------------------------- Kinematic tree -------------------------------
 
-def get_kinematic_tree(armature: bpy.types.Object):
+def get_kinematic_tree(armature):
+    if type(armature.data) is bpy.types.Armature:
+        armature = armature.data
     # Bone's parent index list (root node's parent idx: -1)
-    return [-1 if bone.parent is None else list(armature.data.bones).index(bone.parent)
-            for bone in armature.data.bones]
+    return [-1 if bone.parent is None else list(armature.bones).index(bone.parent)
+            for bone in armature.bones]
 
 # -------------------------- Remove keyframes ------------------------------
 
