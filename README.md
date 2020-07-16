@@ -10,6 +10,8 @@ Currently, work in progress. 🥺
 
 ## 🚶　Installation
 
+### bnp installation
+
 (work in the progress)
 
 1. Copy `bnp/bnp` to `$YOUR_BLENDER_PATH/scripts/addons_contrib` manually
@@ -58,7 +60,6 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
 - [x] Simple geometry importer/exporter
 - [x] Clear unused objects in your Scene
 - [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/assets/screenshots/lbs.png)
-
 
 ## 📄 Documentation
 
