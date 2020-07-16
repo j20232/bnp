@@ -20,7 +20,7 @@ if True:
     from bnp.objects.armature import get_kinematic_tree
     from bnp.objects.armature import insert_keyframe_to_posebone, insert_keyframe_to_armature
     from bnp.objects.armature import remove_keyframe_from_posebone, remove_keyframe_from_armature, remove_keyframes_from_armature
-    from bnp.objects.armature import change_bone_rotation_mode, normalize_roll
+    from bnp.objects.armature import change_rotation_modes_of_armature, normalize_roll
 
     # mesh
     from bnp.objects.mesh import mesh2np, skinning_weights2np
