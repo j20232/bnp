@@ -12,9 +12,9 @@ bnp.objects.armature
 
 .. py:function:: armature2np(armature, dtype=np.float32, mode="dynamic", frame=bpy.context.scene.frame_current, rotation_mode=None) -> np.ndarray
 
-    Convert a `bpy.types.Armature` to `np.ndarray` at current frame.
+    Convert a `bpy.types.Object` which has `bpy.types.Armature` to `np.ndarray` at current frame.
 
-    :param bpy.types.Armature armature: armature
+    :param bpy.types.Object armature: armature which has `bpy.types.Armature`
     :param dtype: dtype
     :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "rest" / "dynamic": absolute translation matrices at rest pose / the frame, "rotation": pose vectors
     :param int frame: frame when you want to read (default: current frame)
