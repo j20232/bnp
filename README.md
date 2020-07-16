@@ -6,15 +6,13 @@
 
 bnp contains simple numpy utilities for Blender.
 
-You can easily read Blender's objects with numpy!
+Latest version: 0.2.0
 
-Currently, work in progress. 🥺
+You can easily read Blender's objects with numpy!
 
 ## 🚶　Installation
 
 ### bnp installation
-
-(work in the progress)
 
 1. Copy `bnp/bnp` to `$YOUR_BLENDER_PATH/scripts/addons_contrib` manually
 
@@ -67,9 +65,10 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
 
 https://bnp.readthedocs.io/en/latest/
 
-## 👁 Blender version
+## 👁 Versions
 
-Blender 2.83
+- Blender 2.83.0 (or later)
+- numpy: 1.17.0 (or later)
 
 ## ⚠️ LICENSE
 
