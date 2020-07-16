@@ -1,8 +1,8 @@
 import bpy
 import numpy as np
 from bnp.objects.base import vec2np, mat2np, location2np, rotation2np
-from bnp.objects.base import normalize_axis_angle
-from bnp.objects.base import remove_keyframe
+from bnp.objects.base import normalize_axis_angle, normalize_quaternion, change_rotation_mode
+from bnp.objects.base import remove_keyframe, insert_keyframe
 
 # ----------------------------------- Conversion -----------------------------------------
 
@@ -90,7 +90,34 @@ def get_kinematic_tree(armature):
     return [-1 if bone.parent is None else list(armature.bones).index(bone.parent)
             for bone in armature.bones]
 
+
+# -------------------------- Insert keyframes ------------------------------
+
+def insert_keyframe_to_posebone(posebone, pose, translation=None,
+                                frame=bpy.context.scene.frame_current,
+                                rotation_mode="rotation_axis_angle"):
+    change_rotation_mode(posebone, rotation_mode, normalized=True)
+    if translation is not None:
+        insert_keyframe(posebone, translation, datapath="location", frame=frame)
+    insert_keyframe(posebone, pose, datapath=rotation_mode, frame=frame)
+
+
+def insert_keyframe_to_armature(armature, frame, poses, translations=None,
+                                rotation_mode="rotation_axis_angle", exception_bone_indices=None,
+                                only_root_translation=True):
+    change_rotation_modes_of_armature(armature, rotation_mode, normalized=True)
+    exception_bone_indices = [] if exception_bone_indices is None else exception_bone_indices
+    for idx, posebone in enumerate(armature.pose.bones):
+        if idx in exception_bone_indices:
+            continue
+        translation = None if only_root_translation or translations is None else translations[idx]
+        insert_keyframe_to_posebone(posebone, poses[idx], translation, frame=frame, rotation_mode=rotation_mode)
+
+
 # -------------------------- Remove keyframes ------------------------------
+
+def remove_keyframe_from_posebone(posebone, frame):
+    remove_keyframe(posebone, frame)
 
 
 def remove_keyframe_from_armature(armature, frame, exception_bone_indices=None):
@@ -98,18 +125,21 @@ def remove_keyframe_from_armature(armature, frame, exception_bone_indices=None):
     for idx, bone in enumerate(armature.pose.bones):
         if idx in exception_bone_indices:
             continue
-        remove_keyframe(bone, frame)
+        remove_keyframe_from_posebone(bone, frame)
+
+
+def remove_keyframes_from_armature(armature, frames, exception_bone_indices=None):
+    for frame in frames:
+        remove_keyframe_from_armature(armature, frame, exception_bone_indices)
+
 
 # --------------------------- Normalization ------------------------------
 
 
-def change_bone_rotation_mode(armature, mode, normalized=True):
-    armature.rotation_mode = mode
-    for bone in armature.pose.bones:
-        q = normalize_axis_angle(bone.rotation_axis_angle)
-        print(q)
-        assert False
-        bone.rotation_mode = mode
+def change_rotation_modes_of_armature(armature, rotation_mode, normalized=True):
+    change_rotation_mode(armature, rotation_mode, normalized)
+    for posebone in armature.pose.bones:
+        change_rotation_mode(posebone, rotation_mode, normalized)
 
 
 def normalize_roll(armature: bpy.types.Object):

@@ -166,6 +166,22 @@ def euler2R(e, mode, dtype=np.float32):
     else:
         NotImplementedError(f"mode {mode} is not supported.")
 
+
+def change_rotation_mode(obj, rotation_mode, normalized=True):
+    if rotation_mode == "rotation_axis_angle":
+        rotation_mode = "AXIS_ANGLE"
+    elif rotation_mode == "rotation_quaternion":
+        rotation_mode = "QUATERNION"
+    else:
+        rotation_mode = "XYZ"
+    obj.rotation_mode = rotation_mode
+    if normalized and obj.rotation_mode == "AXIS_ANGLE":
+        axis_angle = normalize_axis_angle(vec2np(obj.rotation_axis_angle))[0]
+        obj.rotation_axis_angle = (axis_angle[0], axis_angle[1], axis_angle[2], axis_angle[3])
+    elif normalized and obj.rotation_mode == "QUATERNION":
+        quat = normalize_quaternion(vec2np(obj.rotation_quaternion))[0]
+        obj.rotation_quaternion = (quat[0], quat[1], quat[2], quat[3])
+
 # ----------------------------------- Keyframe -----------------------------------------
 
 
