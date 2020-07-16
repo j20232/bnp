@@ -2,7 +2,7 @@ bnp.math.rigging
 =====================
 
 
-.. py:function:: linear_blend_skinning(vertices, rest_pose, dynamic_pose, skinning_weights)
+.. py:function:: linear_blend_skinning(vertices, rest_pose, dynamic_pose, skinning_weights) -> np.ndarray
 
     Calculate new vertex positions with Linear Blend Skinning
 

@@ -4,7 +4,7 @@ bnp.scene.clean
 
 .. py:function:: remove_objects(prefix="debug")
 
-    Remove objects whose name starts with `prefix` from Blender
+    Remove objects whose name contains `prefix` from Blender
 
     :param str prefix: prefix
 

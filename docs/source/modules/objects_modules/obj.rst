@@ -1,7 +1,7 @@
 bnp.objects.obj
 =====================
 
-.. py:function:: any2np(obj, dtype=np.float32, **kwargs)
+.. py:function:: any2np(obj, dtype=np.float32, **kwargs) -> np.ndarray
 
     Convert any objects in Blender to `np.ndarray` at current frame.
 

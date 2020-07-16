@@ -2,7 +2,7 @@ bnp.objects.armature
 =====================
 
 
-.. py:function:: posebone_basis(dtype=np.float32)
+.. py:function:: posebone_basis(dtype=np.float32) -> np.ndarray
 
     Return Blender's posebone basis (equal to bone.matrix_basis) to adjust a bone's rotation
 
@@ -10,7 +10,7 @@ bnp.objects.armature
     :return: `np.ndarray` basis
 
 
-.. py:function:: armature2np(armature, dtype=np.float32, mode="dynamic", frame=bpy.context.scene.frame_current, rotation_mode=None)
+.. py:function:: armature2np(armature, dtype=np.float32, mode="dynamic", frame=bpy.context.scene.frame_current, rotation_mode=None) -> np.ndarray
 
     Convert a `bpy.types.Armature` to `np.ndarray` at current frame.
 
@@ -22,7 +22,7 @@ bnp.objects.armature
     :return: `np.ndarray`
 
 
-.. py:function:: posebone2np(posebone, dtype=np.float32, mode="dynamic", frame=bpy.context.scene.frame_current)
+.. py:function:: posebone2np(posebone, dtype=np.float32, mode="dynamic", frame=bpy.context.scene.frame_current) -> np.ndarray
 
     Get posebone as `np.ndarray`.
 
@@ -33,7 +33,7 @@ bnp.objects.armature
     :return: `np.ndarray`
 
 
-.. py:function:: bone2np(bone, dtype=np.float32, mode="rest", frame=bpy.context.scene.frame_current)
+.. py:function:: bone2np(bone, dtype=np.float32, mode="rest", frame=bpy.context.scene.frame_current) -> np.ndarray
 
     Get bone as `np.ndarray`.
 
@@ -44,7 +44,7 @@ bnp.objects.armature
     :return: `np.ndarray`
 
 
-.. py:function:: get_kinematic_tree(armature: bpy.types.Object)
+.. py:function:: get_kinematic_tree(armature: bpy.types.Object) -> list
 
     Get a kinematic tree as a list (index: bone index, value: parent index)
 

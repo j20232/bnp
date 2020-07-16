@@ -1,7 +1,7 @@
 bnp.objects.base
 =====================
 
-..py:function:: batch_identity(batch_num, size, dtype=np.float32)
+..py:function:: batch_identity(batch_num, size, dtype=np.float32) -> np.ndarray
 
     Return batched identity matrices
 
@@ -11,7 +11,7 @@ bnp.objects.base
     :return: `np.ndarray` (batch_num, size, size)
 
 
-.. py:function:: vec2np(vec, dtype=np.float32)
+.. py:function:: vec2np(vec, dtype=np.float32) -> np.ndarray
 
     Convert a vector such as `mathutils.Vector` to `np.ndarray`.
 
@@ -20,7 +20,7 @@ bnp.objects.base
     :return: `np.ndarray` (vector_size)
 
 
-.. py:function:: mat2np(mat, dtype=np.float32)
+.. py:function:: mat2np(mat, dtype=np.float32) ->np.ndarray
 
     Convert a matrix such as `mathutils.Matrix` to `np.ndarray`.
 
@@ -29,7 +29,7 @@ bnp.objects.base
     :return: Row-major `np.ndarray` (matrix_size)
 
 
-.. py:function:: world_matrix2np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current)
+.. py:function:: world_matrix2np(obj, dtype=np.float32, frame=bpy.context.scene.frame_current) -> np.ndarray
 
     Get world matrix of `bpy.types.Object` as `np.ndarray` (row major). This function is equal to `mat2np(obj.matrix_world)`.
 
@@ -39,7 +39,7 @@ bnp.objects.base
     :return: `np.ndarray` (worldmatrix; row major)
 
 
-.. py:function:: location2np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current)
+.. py:function:: location2np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current) -> np.ndarray
 
     Get location of `bpy.types.Object` as `np.ndarray`.
 
@@ -50,7 +50,7 @@ bnp.objects.base
     :return: `np.ndarray`  (4, 4) if to_matrix else (3)
 
 
-.. py:function:: rotation2np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current)
+.. py:function:: rotation2np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current) -> np.ndarray
 
     Get rotation of `bpy.types.Object` as `np.ndarray`.
 
@@ -61,7 +61,7 @@ bnp.objects.base
     :return: `np.ndarray` (4, 4) if to_matrix else {(3) (euler angle) or (4) (quaternion or axis angle)}
 
 
-.. py:function:: scale2np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current)
+.. py:function:: scale2np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current) -> np.ndarray
 
     Get scale of `bpy.types.Object` as `np.ndarray`.
 
@@ -72,7 +72,7 @@ bnp.objects.base
     :return: `np.ndarray` (4, 4) if to_matrix else (3)
 
 
-.. py:function:: normalize_quaternion(q, eps=1e-10):
+.. py:function:: normalize_quaternion(q, eps=1e-10) -> np.ndarray
 
     Normalize input quaternions
 
@@ -81,7 +81,7 @@ bnp.objects.base
     :return: `np.ndarray` normalized quaternions (1, 4) or (num_of_quaternion, 4)
 
 
-.. py:function:: normalize_axis_angle(a, eps=1e-10):
+.. py:function:: normalize_axis_angle(a, eps=1e-10) -> np.ndarray
 
     Normalize input axis angles
 
@@ -90,7 +90,7 @@ bnp.objects.base
     :return: `np.ndarray` normalized axis angles (1, 4) or (num_of_axis_angles, 4)
 
 
-.. py:function:: quaternion2R(q, dtype=np.float32, eps=1e-10)
+.. py:function:: quaternion2R(q, dtype=np.float32, eps=1e-10) -> np.ndarray
 
     Convert quaternions to rotation matrices
     
@@ -100,7 +100,7 @@ bnp.objects.base
     :return: `np.ndarray` rotation matrices (num_of_quaternion, 4, 4)
 
 
-.. py:function:: axis_angle2R(a, dtype=np.float32, eps=1e-10)
+.. py:function:: axis_angle2R(a, dtype=np.float32, eps=1e-10) -> np.ndarray
 
     Convert axis angles to rotation matrices
     
@@ -110,7 +110,7 @@ bnp.objects.base
     :return: `np.ndarray` rotation matrices (num_of_axis_angles, 4, 4)
 
 
-.. py:function:: euler2R(e, dtype=np.float32, eps=1e-10)
+.. py:function:: euler2R(e, dtype=np.float32, eps=1e-10) -> np.ndarray
 
     Convert euler angles to rotation matrices
     
