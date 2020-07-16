@@ -39,7 +39,7 @@ bnp.objects.base
     :return: `np.ndarray` (vtx_num, 3)
 
 
- .. py:function:: collection2np(obj, dtype=np.float32) -> np.ndarray
+.. py:function:: collection2np(obj, dtype=np.float32) -> np.ndarray
 
     Convert vertices (`bpy.types.bpy_prop_collection`) to `np.ndarray`
 
