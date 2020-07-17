@@ -41,7 +41,7 @@ def obj2np(obj: bpy.types.Object, dtype=np.float32, apply_modifier=False,
         return mesh2np(obj.data, world_matrix=world_matrix, geo_type=geo_type, dtype=dtype,
                        is_local=is_local, frame=frame, as_homogeneous=as_homogeneous)
     elif type(obj.data) == bpy.types.Armature:
-        return armature2np(obj.data, dtype=dtype, mode=mode, fram=frame)
+        return armature2np(obj.data, dtype=dtype, mode=mode, frame=frame)
     else:
         raise NotImplementedError(
             f"{type(obj.data)} is not supported with obj2np")
