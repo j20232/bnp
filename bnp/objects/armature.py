@@ -15,7 +15,7 @@ def posebone_basis(dtype=np.float32):
 
 
 def armature2np(armature: bpy.types.Object, dtype=np.float32, mode="dynamic",
-                frame=bpy.context.scene.frame_current, rotation_mode=None) -> np.ndarray:
+                frame=bpy.context.scene.frame_current) -> np.ndarray:
     normalize_roll(armature)
     if mode in ["head", "tail", "length", "offset", "rest"]:
         return np.array([bone2np(
@@ -24,7 +24,7 @@ def armature2np(armature: bpy.types.Object, dtype=np.float32, mode="dynamic",
         return np.array([posebone2np(
             p, dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
     elif mode in ["rotation"]:
-        return np.array([rotation2np(p, rotation_mode=rotation_mode, dtype=dtype, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
+        return np.array([rotation2np(p, dtype=dtype, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
     else:
         raise NotImplementedError(f"Not supported the mode {mode}.")
 
