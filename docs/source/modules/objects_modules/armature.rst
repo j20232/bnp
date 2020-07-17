@@ -16,7 +16,7 @@ bnp.objects.armature
 
     :param bpy.types.Object armature: armature which has `bpy.types.Armature`
     :param dtype: dtype
-    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "rest" / "dynamic": absolute translation matrices at rest pose / the frame, "rotation": pose vectors
+    :param str mode: "head" or "tail": local head/tail positions (`joint_num`, 3), "length": bone lengths (`joint_num`,), "offset": bone offset translation matices (`joint_num`, 4, 4),"rest" / "dynamic": absolute translation matrices at rest pose / the frame, "rotation": pose vectors
     :param int frame: frame when you want to read (default: current frame)
     :param str rotation_mode: the type of pose vectors. ("QUATERNION", "AXIS_ANGLE", "XYZ", "XZY", ... "ZYX")
     :return: `np.ndarray`

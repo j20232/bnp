@@ -17,7 +17,7 @@ def posebone_basis(dtype=np.float32):
 def armature2np(armature: bpy.types.Object, dtype=np.float32, mode="dynamic",
                 frame=bpy.context.scene.frame_current, rotation_mode=None) -> np.ndarray:
     normalize_roll(armature)
-    if mode in ["head", "tail", "length", "rest"]:
+    if mode in ["head", "tail", "length", "offset", "rest"]:
         return np.array([bone2np(
             p.bone, dtype=dtype, mode=mode, frame=frame) for p in list(armature.pose.bones)], dtype=dtype)
     elif mode in ["dynamic"]:
