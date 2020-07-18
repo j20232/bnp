@@ -44,14 +44,13 @@ if __name__ == '__main__':
     print("Scale matrix: ", scale_matrix)
 
     # Insert keyframes
-    """
+
     bnp.insert_keyframe(obj, location, "location", frame=0)
     bnp.insert_keyframe(obj, location + 1.0, "location", frame=40)
     bnp.insert_keyframe(obj, rotation, "rotation", frame=0)
     bnp.insert_keyframe(obj, rotation * 1.1, "rotation", frame=40)
     bnp.insert_keyframe(obj, scale, "scale", frame=0)
     bnp.insert_keyframe(obj, scale * 1.4, "scale", frame=40)
-    """
 
     """
     bnp.scene.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.obj"), obj)
