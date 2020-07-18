@@ -20,7 +20,7 @@ if __name__ == '__main__':
 
     vertices = bnp.obj2np(obj, frame=start_frame)
     print("Vertex positions: ", vertices)  # (vtx_num, 3)
-    bnp.scene.put_cubes(vertices)  # frame 0
+    bnp.scene.put_cubes(vertices, size=0.15)  # frame 0
 
     world_matrix = bnp.world_matrix2np(obj)
     print("world_matrix: ", world_matrix)
@@ -44,12 +44,14 @@ if __name__ == '__main__':
     print("Scale matrix: ", scale_matrix)
 
     # Insert keyframes
+    """
     bnp.insert_keyframe(obj, location, "location", frame=0)
     bnp.insert_keyframe(obj, location + 1.0, "location", frame=40)
     bnp.insert_keyframe(obj, rotation, "rotation", frame=0)
     bnp.insert_keyframe(obj, rotation * 1.1, "rotation", frame=40)
     bnp.insert_keyframe(obj, scale, "scale", frame=0)
     bnp.insert_keyframe(obj, scale * 1.4, "scale", frame=40)
+    """
 
     """
     bnp.scene.export_geom(str(LIBRARY_ROOT_PATH / "assets" / "box.obj"), obj)
