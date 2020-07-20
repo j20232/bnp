@@ -6,7 +6,7 @@
 
 bnp contains simple numpy utilities for Blender.
 
-Latest version: 0.2.0
+Latest version: 0.2.1
 
 You can easily read Blender's objects with numpy!
 
