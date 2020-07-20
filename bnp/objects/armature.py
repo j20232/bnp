@@ -44,8 +44,8 @@ def posebone2np(posebone,
         return bone2np(posebone.bone, dtype=dtype, mode=mode, frame=frame)
     elif mode == "dynamic":
         dynamic_pose = rotation2np(posebone, dtype=dtype, to_matrix=True, frame=frame)
-        basis = posebone_basis(dtype=dtype)
-        rot_scale = basis if posebone.parent is None else posebone2np(
+        basis = bone2np(posebone.bone, dtype=dtype, mode="rest")
+        rot_scale = basis @ dynamic_pose if posebone.parent is None else posebone2np(
             posebone.parent, dtype=dtype, mode=mode) @ posebone2np(posebone, dtype=dtype, mode="offset")
         dynamic_pose = rot_scale @ dynamic_pose
         if posebone.parent is None:  # root node
@@ -73,10 +73,8 @@ def bone2np(bone,
             offset.translation.y += bone.parent.length
         return mat2np(offset, dtype=dtype)
     elif mode == "rest":
-        # absolute translation matrix
-        # not considering bones' rotation at rest pose
-        # equal to mat2np(bone.matrix_local, dtype=dtype)
-        return posebone_basis(dtype) if bone.parent is None else bone2np(bone.parent, dtype=dtype, mode="rest", frame=frame) @ bone2np(bone, dtype=dtype, mode="offset", frame=frame)
+        # absolute translation matrix not considering bones' rotation at rest pose
+        return mat2np(bone.matrix_local, dtype=dtype)
     else:
         raise NotImplementedError(f"mode {mode} isn't supported.")
 
