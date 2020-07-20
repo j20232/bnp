@@ -98,6 +98,16 @@ def normalize_axis_angle(a, eps=1e-10):
     return a
 
 
+def axis_angle_4to3(a, eps=1e-10):
+    a = normalize_axis_angle(a, eps)
+    return a[:, 0].reshape(-1, 1) * a[:, 1:4]  # normalize with norm
+
+
+def axis_angle_3to4(a):
+    norm = np.sqrt(a[:, 0] ** 2 + a[:, 1] ** 2 + a[:, 2] ** 2)
+    return np.hstack([norm, a])  # norm as rotation angle
+
+
 def quaternion2R(q, dtype=np.float32, eps=1e-10):
     # q: (num_of_quaternion, 4) [w, x, y, z]
     q = normalize_quaternion(q, eps)
