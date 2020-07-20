@@ -49,12 +49,14 @@ def location2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
 
 
 def rotation2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-                frame=bpy.context.scene.frame_current) -> np.ndarray:
+                frame=bpy.context.scene.frame_current, convert_axis_4to3=False) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     if obj.rotation_mode == "QUATERNION":
         rot = vec2np(obj.rotation_quaternion, dtype=dtype)  # (3)
     elif obj.rotation_mode == "AXIS_ANGLE":
         rot = vec2np(obj.rotation_axis_angle, dtype=dtype)  # (4)
+        if convert_axis_4to3:
+            return axis_angle_4to3(rot)
     else:
         rot = vec2np(obj.rotation_euler, dtype=dtype)  # (3)
     if not to_matrix:
@@ -99,13 +101,17 @@ def normalize_axis_angle(a, eps=1e-10):
 
 
 def axis_angle_4to3(a, eps=1e-10):
+    if len(a.shape) == 1:
+        a = a.reshape(1, 4)
     a = normalize_axis_angle(a, eps)
     return a[:, 0].reshape(-1, 1) * a[:, 1:4]  # normalize with norm
 
 
 def axis_angle_3to4(a):
-    norm = np.sqrt(a[:, 0] ** 2 + a[:, 1] ** 2 + a[:, 2] ** 2)
-    return np.hstack([norm, a])  # norm as rotation angle
+    if len(a.shape) == 1:
+        a = a.reshape(1, 3)
+    norm = np.sqrt(a[:, 0] ** 2 + a[:, 1] ** 2 + a[:, 2] ** 2).reshape(-1, 1)
+    return np.hstack((norm, a))  # norm as rotation angle
 
 
 def quaternion2R(q, dtype=np.float32, eps=1e-10):
