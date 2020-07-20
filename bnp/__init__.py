@@ -12,11 +12,11 @@ if True:
 
     # base
     from bnp.objects.base import batch_identity, vec2np, mat2np, vertices2np, collection2np, world_matrix2np, location2np, rotation2np, scale2np
-    from bnp.objects.base import normalize_quaternion, normalize_axis_angle, quaternion2R, axis_angle2R, euler2R, change_rotation_mode
+    from bnp.objects.base import normalize_quaternion, normalize_axis_angle, axis_angle_4to3, axis_angle_3to4, quaternion2R, axis_angle2R, euler2R, change_rotation_mode
     from bnp.objects.base import get_keyframe_list, insert_keyframe, remove_keyframe, remove_keyframes
 
     # armature
-    from bnp.objects.armature import armature2np, posebone2np, bone2np
+    from bnp.objects.armature import posebone_basis, armature2np, posebone2np, bone2np
     from bnp.objects.armature import get_kinematic_tree
     from bnp.objects.armature import insert_keyframe_to_posebone, insert_keyframe_to_armature
     from bnp.objects.armature import remove_keyframe_from_posebone, remove_keyframe_from_armature, remove_keyframes_from_armature
