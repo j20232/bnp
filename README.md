@@ -68,7 +68,7 @@ https://bnp.readthedocs.io/en/latest/
 ## 👁 Versions
 
 - Blender 2.83.0 (or later)
-- numpy: 1.17.0 (or later)
+- numpy: 1.19.0 (or later)
 
 ## ⚠️ LICENSE
 
