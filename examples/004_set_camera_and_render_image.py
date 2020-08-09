@@ -23,7 +23,7 @@ if __name__ == '__main__':
     KRt = (K @ Rt).reshape(1, 3, 4)
     projected_points = (KRt @ vertices).reshape(-1, 3)
     projected_points = projected_points / projected_points[:, 2].reshape(-1, 1)
-    projected_points /= 100  # forvisualization
+    projected_points /= 100  # for visualization
     bnp.scene.put_cubes(projected_points, size=0.10, sampling_rate=3)
     P = K @ Rt
 
@@ -31,3 +31,6 @@ if __name__ == '__main__':
     camera3 = bnp.create_camera("debug_reconstructed_camera2", K=K, Rt=Rt, scale=1.0, use_cv_coord=True)
 
     bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.png"), camera3)
+    bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.exr"), camera3)
+    bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.mp4"), camera3,
+                     animation=True, frame_start=0, frame_end=5)
