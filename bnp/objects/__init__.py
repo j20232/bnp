@@ -1,5 +1,7 @@
 from bnp.objects import base
 from bnp.objects import armature
+from bnp.objects import camera
+from bnp.objects import light
 from bnp.objects import mesh
 from bnp.objects import obj
 
@@ -8,6 +10,8 @@ if True:
     import importlib
     importlib.reload(base)
     importlib.reload(armature)
+    importlib.reload(camera)
+    importlib.reload(light)
     importlib.reload(mesh)
     importlib.reload(obj)
 
@@ -23,8 +27,11 @@ if True:
     from bnp.objects.armature import remove_keyframe_from_posebone, remove_keyframe_from_armature, remove_keyframes_from_armature
     from bnp.objects.armature import change_rotation_modes_of_armature, normalize_roll
 
+    # camera
+    from bnp.objects.camera import camera2np, create_camera, get_intrinsic_parameters, get_extrinsic_parameters
+
     # light
-    from bnp.objects.light import create_lights
+    from bnp.objects.light import create_light
 
     # mesh
     from bnp.objects.mesh import mesh2np, skinning_weights2np
