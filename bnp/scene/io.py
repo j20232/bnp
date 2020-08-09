@@ -14,7 +14,7 @@ def import_geom(filepath: str, keep_vertex_order=True, **kwargs):
     elif ext == "fbx":
         bpy.ops.import_scene.fbx(filepath=filepath, **kwargs)
     elif ext == "glb":
-        bpy.ops.import_scene.glb(filepath=filepath, **kwargs)
+        bpy.ops.import_scene.gltf(filepath=filepath, **kwargs)
     elif ext == "x3d":
         bpy.ops.import_scene.x3d(filepath=filepath, **kwargs)
     elif ext == "ply":
