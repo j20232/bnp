@@ -69,7 +69,7 @@ bnp.objects.base
     :return: `np.ndarray`  (4, 4) if to_matrix else (3)
 
 
-.. py:function:: rotation2np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current) -> np.ndarray
+.. py:function:: rotation2np(obj, dtype=np.float32, to_matrix=False, frame=bpy.context.scene.frame_current, convert_axis_4to3=False) -> np.ndarray
 
     Get rotation of `bpy.types.Object` as `np.ndarray`.
 
@@ -77,6 +77,7 @@ bnp.objects.base
     :param dtype: dtype
     :param bool to_matrix: whether to convert a rotation vector to a translation matrix
     :param int frame: frame when you want to read (default: current frame)
+    :param bool convert_axis_4to3: whether to convert the dimension of axis angles from 4 to 3 (same as SMPL context)
     :return: `np.ndarray` (4, 4) if to_matrix else {(3) (euler angle) or (4) (quaternion or axis angle)}
 
 
@@ -105,6 +106,24 @@ bnp.objects.base
     Normalize input axis angles
 
     :param np.ndarray: axis angles: (4) or (num_of_quaternion, 4)
+    :param float eps: epsilon to avoid zero-division
+    :return: `np.ndarray` normalized axis angles (1, 4) or (num_of_axis_angles, 4)
+
+
+.. py:function:: axis_angle_4to3(a, eps=1e-10) -> np.ndarray
+
+    Convert the dimension of axis angles from 4 to 3 (same as SMPL context)
+
+    :param np.ndarray: axis angles: (4) or (num_of_quaternion, 4)
+    :param float eps: epsilon to avoid zero-division
+    :return: `np.ndarray` normalized axis angles (1, 3) or (num_of_axis_angles, 3)
+
+
+.. py:function:: axis_angle_3to4(a, eps=1e-10) -> np.ndarray
+
+    Convert the dimension of axis angles from 3 to 4 (same as SMPL context)
+
+    :param np.ndarray: axis angles: (3) or (num_of_quaternion, 3)
     :param float eps: epsilon to avoid zero-division
     :return: `np.ndarray` normalized axis angles (1, 4) or (num_of_axis_angles, 4)
 
