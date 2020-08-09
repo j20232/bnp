@@ -2,7 +2,7 @@ import bpy
 import re
 
 
-def remove_objects(prefix="debug"):
+def remove_objects(prefix: str = "debug"):
     if bpy.context.view_layer.objects.active is None:
         return
     bpy.ops.object.mode_set(mode='OBJECT', toggle=False)

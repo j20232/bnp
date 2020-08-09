@@ -22,6 +22,9 @@ if True:
     from bnp.objects.armature import remove_keyframe_from_posebone, remove_keyframe_from_armature, remove_keyframes_from_armature
     from bnp.objects.armature import change_rotation_modes_of_armature, normalize_roll
 
+    # light
+    from bnp.objects.light import create_lights
+
     # mesh
     from bnp.objects.mesh import mesh2np, skinning_weights2np
     from bnp.objects.mesh import normalize_skinning_weights

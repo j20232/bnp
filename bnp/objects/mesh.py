@@ -6,9 +6,9 @@ from bnp.objects.base import vec2np
 
 # ----------------------------------- Conversion -----------------------------------------
 
-def mesh2np(mesh: bpy.types.Mesh, world_matrix=None,
-            geo_type="position", dtype=np.float32, is_local=False,
-            frame=bpy.context.scene.frame_current, as_homogeneous=False) -> np.ndarray:
+def mesh2np(mesh: bpy.types.Mesh, world_matrix: np.ndarray = None,
+            geo_type: str = "position", dtype: type = np.float32, is_local: bool = False,
+            frame: int = bpy.context.scene.frame_current, as_homogeneous: bool = False) -> np.ndarray:
     # Input: mesh(bpy.types.Mesh), Output: positions or normals
     bpy.context.scene.frame_set(frame)
     if geo_type not in ["position", "normal"]:
@@ -31,11 +31,11 @@ def mesh2np(mesh: bpy.types.Mesh, world_matrix=None,
     return global_verts if as_homogeneous else global_verts[:, 0:3]
 
 
-def skinning_weights2np(obj: bpy.types.Object, dtype=np.float32) -> np.ndarray:
+def skinning_weights2np(obj: bpy.types.Object, dtype: type = np.float32) -> np.ndarray:
     # skining weights are equal to vertex weights in Blender
     mesh = obj.data
     vertices = mesh.vertices
-    skinning_weights = np.zeros((len(vertices), len(obj.vertex_groups)))
+    skinning_weights = np.zeros((len(vertices), len(obj.vertex_groups)), dtype=dtype)
     for vid, v in enumerate(mesh.vertices):
         for vg in v.groups:
             skinning_weights[vid, vg.group] = vg.weight
@@ -45,7 +45,7 @@ def skinning_weights2np(obj: bpy.types.Object, dtype=np.float32) -> np.ndarray:
 # -------------------------------- Normalization ----------------------------------------
 
 
-def normalize_skinning_weights(obj):
+def normalize_skinning_weights(obj: bpy.types.Object) -> bpy.types.Mesh:
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.mode_set(mode="EDIT")
     bpy.ops.mesh.select_mode(type="VERT")
@@ -67,7 +67,7 @@ def normalize_skinning_weights(obj):
 # ----------------------------------- Selection -----------------------------------------
 
 
-def get_active_vertex_indices(obj: bpy.types.Object):
+def get_active_vertex_indices(obj: bpy.types.Object) -> list:
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.mode_set(mode="EDIT")
     bm = bmesh.from_edit_mesh(obj.data)
@@ -81,15 +81,15 @@ def get_active_vertex_indices(obj: bpy.types.Object):
 # ----------------------------------- Shape keys ----------------------------------------
 
 
-def remove_shape_keys(obj, all=True):
+def remove_shape_keys(obj: bpy.types.Object, all: bool = True):
     # Shape key is equal to blend shape
     bpy.context.view_layer.objects.active = obj
     if bpy.context.object.data.shape_keys is not None:
         bpy.ops.object.shape_key_remove(all=all)
 
 
-def add_shape_key(obj, name, blend_weight=1.0, vertices=None,
-                  slider_min=0.0, slider_max=1.0, from_mix=False):
+def add_shape_key(obj: bpy.types.Object, name: str, blend_weight: float = 1.0, vertices: np.ndarray = None,
+                  slider_min: float = 0.0, slider_max: float = 1.0, from_mix: bool = False):
     # Shape key is equal to blend shape
     bpy.context.view_layer.objects.active = obj
     bpy.ops.object.shape_key_add(from_mix=from_mix)
@@ -100,7 +100,7 @@ def add_shape_key(obj, name, blend_weight=1.0, vertices=None,
     adjust_shape_key(obj, name, blend_weight, vertices)
 
 
-def adjust_shape_key(obj, name, blend_weight, vertices=None):
+def adjust_shape_key(obj: bpy.types.Object, name: str, blend_weight: float, vertices: np.ndarray = None):
     bpy.context.view_layer.objects.active = obj
     key_block = bpy.data.shape_keys["Key"].key_blocks[name]
     key_block.value = blend_weight
@@ -116,7 +116,7 @@ def adjust_shape_key(obj, name, blend_weight, vertices=None):
         bpy.ops.object.mode_set(mode="OBJECT")
 
 
-def insert_keyframes_to_shape_keys(obj, blend_weights):
+def insert_keyframes_to_shape_keys(obj: bpy.types.Object, blend_weights: dict):
     bpy.context.view_layer.objects.active = obj
     for str_frame in blend_weights.keys():
         frame = int(str_frame)
@@ -126,7 +126,7 @@ def insert_keyframes_to_shape_keys(obj, blend_weights):
             key_block.keyframe_insert("value", frame=frame)
 
 
-def get_keyframe_of_shapekeys(obj):
+def get_keyframe_of_shapekeys(obj: bpy.types.Object) -> list:
     bpy.context.view_layer.objects.active = obj
     if obj.data.shape_keys is None or obj.data.shape_keys.animation_data.action is None:
         return []
@@ -135,4 +135,4 @@ def get_keyframe_of_shapekeys(obj):
         for keyframe in fcurve.keyframe_points:
             # keyframe: Vector(keyframe, value)
             keyframes.append(int(keyframe.co[0]))
-    return list(sorted(set(keyframes)))
+    return list(sorted(set(keyframes))) # list of keyframes (int)

@@ -4,41 +4,43 @@ import numpy as np
 # ----------------------------------- Conversion -----------------------------------------
 
 
-def batch_identity(batch_num, size, dtype=np.float32):
+def batch_identity(batch_num: int, size: int, dtype: type = np.float32) -> np.ndarray:
     R = np.zeros((batch_num, size, size), dtype=dtype)
     for i in range(size):
         R[:, i, i] = 1.0
     return R
 
 
-def vec2np(vec, dtype=np.float32) -> np.ndarray:
+def vec2np(vec, dtype: type = np.float32) -> np.ndarray:
+    # vec is np.ndarray or mathutils.Vector
     return np.array([v for v in vec], dtype=dtype)
 
 
-def mat2np(mat, dtype=np.float32) -> np.ndarray:
+def mat2np(mat, dtype: type = np.float32) -> np.ndarray:
+    # mat is np.ndarray or mathutils.Matrix
     return np.array([vec2np(mat[rid]) for rid in range(len(mat.row))], dtype=dtype)
 
 
-def vertices2np(vertices, dtype=np.float32) -> np.ndarray:
+def vertices2np(vertices, dtype: type = np.float32) -> np.ndarray:
     np_verts = np.zeros(len(vertices, 3), dtype=dtype)
     for idx, v in enumerate(vertices):
         np_verts[idx] = np.array([v.co.x, v.co.y, v.co.z], dtype=dtype)
     return np_verts
 
 
-def collection2np(obj, dtype=np.float32):
+def collection2np(obj, dtype: type = np.float32) -> np.ndarray:
     if type(obj[0]) == bpy.types.MeshVertex:
         return vertices2np(obj, dtype)
     raise NotImplementedError(type(obj[0]))
 
 
-def world_matrix2np(obj: bpy.types.Object, dtype=np.float32, frame=bpy.context.scene.frame_current) -> np.ndarray:
+def world_matrix2np(obj: bpy.types.Object, dtype: type = np.float32, frame: int = bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     return location2np(obj, dtype, True, frame) @ rotation2np(obj, dtype, True, frame) @ scale2np(obj, dtype, True, frame)
 
 
-def location2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-                frame=bpy.context.scene.frame_current) -> np.ndarray:
+def location2np(obj: bpy.types.Object, dtype: type = np.float32, to_matrix: bool = False,
+                frame: int = bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     location = vec2np(obj.location, dtype=dtype)
     if not to_matrix:
@@ -48,8 +50,8 @@ def location2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
     return mat  # (4, 4)
 
 
-def rotation2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-                frame=bpy.context.scene.frame_current) -> np.ndarray:
+def rotation2np(obj: bpy.types.Object, dtype: type = np.float32, to_matrix: bool = False,
+                frame: int = bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     if obj.rotation_mode == "QUATERNION":
         rot = vec2np(obj.rotation_quaternion, dtype=dtype)  # (3)
@@ -68,8 +70,8 @@ def rotation2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
     return mat[0]
 
 
-def scale2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
-             frame=bpy.context.scene.frame_current) -> np.ndarray:
+def scale2np(obj: bpy.types.Object, dtype: type = np.float32, to_matrix: bool = False,
+             frame: int = bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     scale = vec2np(obj.scale)  # (3)
     if not to_matrix:
@@ -82,7 +84,7 @@ def scale2np(obj: bpy.types.Object, dtype=np.float32, to_matrix=False,
 # ----------------------------------- Rotation -----------------------------------------
 
 
-def normalize_quaternion(q, eps=1e-10):
+def normalize_quaternion(q: np.ndarray, eps: float = 1e-10) -> np.ndarray:
     if len(q.shape) == 1:
         q = q.reshape(1, -1)
     q /= (np.sqrt(q[:, 0] ** 2 + q[:, 1] ** 2 +
@@ -90,7 +92,7 @@ def normalize_quaternion(q, eps=1e-10):
     return q
 
 
-def normalize_axis_angle(a, eps=1e-10):
+def normalize_axis_angle(a: np.ndarray, eps: float = 1e-10) -> np.ndarray:
     if len(a.shape) == 1:
         a = a.reshape(1, -1)
     norm = np.sqrt(a[:, 1] ** 2 + a[:, 2] ** 2 + a[:, 3] ** 2) + eps
@@ -98,7 +100,7 @@ def normalize_axis_angle(a, eps=1e-10):
     return a
 
 
-def quaternion2R(q, dtype=np.float32, eps=1e-10):
+def quaternion2R(q: np.ndarray, dtype: type = np.float32, eps: float = 1e-10) -> np.ndarray:
     # q: (num_of_quaternion, 4) [w, x, y, z]
     q = normalize_quaternion(q, eps)
     R = batch_identity(q.shape[0], 4, dtype=dtype)
@@ -114,7 +116,7 @@ def quaternion2R(q, dtype=np.float32, eps=1e-10):
     return R  # (num_of_quaternion, 4, 4)
 
 
-def axis_angle2R(a, dtype=np.float32, eps=1e-10):
+def axis_angle2R(a: np.ndarray, dtype: type = np.float32, eps: float = 1e-10) -> np.ndarray:
     # a: (num_of_axis_angle, 3) [w, x, y, z]  w is represented as radian
     a = normalize_axis_angle(a, eps=eps)
     R = batch_identity(a.shape[0], 4, dtype=dtype)
@@ -132,7 +134,7 @@ def axis_angle2R(a, dtype=np.float32, eps=1e-10):
     return R  # (num_of_axis_angle, 4, 4)
 
 
-def euler2R(e, mode, dtype=np.float32):
+def euler2R(e: np.ndarray, mode: str, dtype: type = np.float32) -> np.ndarray:
     # e: (num_of_euler_angles, 3) [x, y, z]
     if len(e.shape) == 1:
         e = e.reshape(1, -1)
@@ -167,7 +169,7 @@ def euler2R(e, mode, dtype=np.float32):
         NotImplementedError(f"mode {mode} is not supported.")
 
 
-def change_rotation_mode(obj, rotation_mode, normalized=True):
+def change_rotation_mode(obj: bpy.types.Object, rotation_mode: str, normalized: bool = True):
     if rotation_mode == "rotation_axis_angle":
         rotation_mode = "AXIS_ANGLE"
     elif rotation_mode == "rotation_quaternion":
@@ -185,7 +187,7 @@ def change_rotation_mode(obj, rotation_mode, normalized=True):
 # ----------------------------------- Keyframe -----------------------------------------
 
 
-def get_keyframe_list(obj):
+def get_keyframe_list(obj: bpy.types.Object) -> list:
     if obj.animation_data.action is None:
         return []
     keyframes = []
@@ -193,10 +195,10 @@ def get_keyframe_list(obj):
         for keyframe in fcurve.keyframe_points:
             # keyframe: Vector(keyframe, value)
             keyframes.append(int(keyframe.co[0]))
-    return list(sorted(set(keyframes)))
+    return list(sorted(set(keyframes)))  # list of keyframes (int)
 
 
-def insert_keyframe(obj, vec: np.ndarray, datapath: str, frame=bpy.context.scene.frame_current) -> np.ndarray:
+def insert_keyframe(obj: bpy.types.Object, vec: np.ndarray, datapath: str, frame: int = bpy.context.scene.frame_current) -> np.ndarray:
     bpy.context.scene.frame_set(frame)
     if datapath == "rotation":
         if obj.rotation_mode == "AXIS_ANGLE":
@@ -224,7 +226,7 @@ def insert_keyframe(obj, vec: np.ndarray, datapath: str, frame=bpy.context.scene
     obj.keyframe_insert(data_path=datapath, frame=frame)
 
 
-def remove_keyframe(obj, frame):
+def remove_keyframe(obj: bpy.types.Object, frame: int):
     if obj.rotation_mode == "QUATERNION":
         obj.keyframe_insert(data_path="rotation_quaternion", frame=frame)
         obj.keyframe_delete(data_path="rotation_quaternion", frame=frame)
@@ -240,6 +242,6 @@ def remove_keyframe(obj, frame):
     obj.keyframe_delete(data_path="scale", frame=frame)
 
 
-def remove_keyframes(obj, frames):
+def remove_keyframes(obj: bpy.types.Object, frames: list):
     for frame in frames:
         remove_keyframe(obj, frame)

@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def linear_blend_skinning(vertices, rest_pose, dynamic_pose, skinning_weights):
+def linear_blend_skinning(vertices: np.ndarray, rest_pose: np.ndarray, dynamic_pose: np.ndarray, skinning_weights: np.ndarray):
     """Calculate new vertex positions
 
     Args:

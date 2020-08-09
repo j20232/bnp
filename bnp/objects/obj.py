@@ -7,7 +7,7 @@ from bnp.objects.mesh import mesh2np
 from bnp.objects.armature import armature2np
 
 
-def any2np(obj, dtype=np.float32, **kwargs) -> np.ndarray:
+def any2np(obj: bpy.types.Object, dtype: type = np.float32, **kwargs) -> np.ndarray:
     if type(obj) == Vector:
         return vec2np(obj, dtype=dtype)
     if type(obj) == Matrix:
@@ -26,9 +26,9 @@ def any2np(obj, dtype=np.float32, **kwargs) -> np.ndarray:
         raise NotImplementedError(f"{type(obj)} is not supported with any2np.")
 
 
-def obj2np(obj: bpy.types.Object, dtype=np.float32, apply_modifier=False,
-           frame=bpy.context.scene.frame_current, geo_type="position",
-           is_local=False, as_homogeneous=False, mode="dynamic") -> np.ndarray:
+def obj2np(obj: bpy.types.Object, dtype: type = np.float32, apply_modifier: bool = False,
+           frame: int = bpy.context.scene.frame_current, geo_type: str = "position",
+           is_local: bool = False, as_homogeneous: bool = False, mode: str = "dynamic") -> np.ndarray:
     # Input: obj(bpy.types.Object), Output: positions or normals
     bpy.context.scene.frame_set(frame)
     if type(obj.data) == bpy.types.Mesh :
@@ -47,9 +47,9 @@ def obj2np(obj: bpy.types.Object, dtype=np.float32, apply_modifier=False,
             f"{type(obj.data)} is not supported with obj2np")
 
 
-def objname2np(obj_name: str, dtype=np.float32, apply_modifier=False,
-               frame=bpy.context.scene.frame_current, geo_type="position",
-               is_local=False, as_homogeneous=False, mode="dynamic") -> np.ndarray:
+def objname2np(obj_name: str, dtype: type = np.float32, apply_modifier: bool = False,
+               frame: int = bpy.context.scene.frame_current, geo_type: str = "position",
+               is_local: bool = False, as_homogeneous: bool = False, mode: str = "dynamic") -> np.ndarray:
     return obj2np(bpy.context.scene.objects[obj_name], dtype=dtype,
                   apply_modifier=apply_modifier, frame=frame, geo_type=geo_type,
                   is_local=is_local, as_homogeneous=as_homogeneous, mode=mode)
