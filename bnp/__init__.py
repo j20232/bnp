@@ -23,7 +23,7 @@ if True:
     from bnp.objects.armature import change_rotation_modes_of_armature, normalize_roll
 
     # camera
-    from bnp.objects.camera import camera2np, create_camera, get_intrinsic_parameters, get_extrinsic_parameters
+    from bnp.objects.camera import camera2np, create_camera, get_intrinsic_parameters, get_extrinsic_parameters, KRt_from_P
 
     # light
     from bnp.objects.light import create_light

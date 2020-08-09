@@ -48,3 +48,10 @@ def export_geom(filepath: str, obj: bpy.types.Object,
     else:
         raise Exception("Illegal extension")
     print(f"Exported {obj.name} to {filepath}")
+
+
+def render(filepath: str, camera: bpy.types.Object = bpy.context.scene.camera, animation: bool = False,
+           render: bpy.types.RenderSettings = bpy.context.scene.render, write_still=True):
+    bpy.context.scene.camera = camera
+    render.filepath = filepath
+    bpy.ops.render.render(animation=animation, write_still=write_still)
