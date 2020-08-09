@@ -6,7 +6,7 @@
 
 bnp contains simple numpy utilities for Blender.
 
-Latest version: 0.2.1
+Latest version: 0.3.0
 
 You can easily read Blender's objects with numpy!
 
@@ -57,9 +57,11 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
   - Vertex positions of `bpy.types.Mesh`
   - Skinning weights (vertex weights) of `bpy.types.Object`
   - Blend shapes (shape keys) of `bpy.types.Object`
+  - Camera parameters from `bpy.types.Camera`
 - [x] Simple geometry importer/exporter
 - [x] Clear unused objects in your Scene
 - [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/assets/screenshots/lbs.png)
+- [x] Simple rendering API
 
 ## 📄 Documentation
 
