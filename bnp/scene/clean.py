@@ -17,7 +17,7 @@ def remove_objects(prefix: str = "debug"):
     clear_garbages()
 
 
-def clear_garbages():
+def clear_garbages(remove_world=True):
     for block in bpy.data.objects:
         if block.users == 0:
             bpy.data.objects.remove(block)
@@ -30,9 +30,15 @@ def clear_garbages():
     for block in bpy.data.textures:
         if block.users == 0:
             bpy.data.textures.remove(block)
+    for block in bpy.data.lights:
+        if block.users == 0:
+            bpy.data.lights.remove(block)
     for block in bpy.data.images:
         if block.users == 0:
             bpy.data.images.remove(block)
     for block in bpy.data.collections:
         if block.users == 0:
             bpy.data.collections.remove(block)
+    if remove_world:
+        for block in bpy.data.worlds:
+            bpy.data.worlds.remove(block)

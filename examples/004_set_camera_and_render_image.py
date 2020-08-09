@@ -14,6 +14,8 @@ if __name__ == '__main__':
 
     bnp.scene.remove_objects("debug")
     point_light = bnp.create_light()
+    bnp.set_envmap(str(LIBRARY_ROOT_PATH / "assets" / "env_test.png"))
+
     camera1 = bnp.create_camera(position=[0.0, 0.0, 4.0])
     vertices = (bnp.objname2np("Suzanne", as_homogeneous=True)).reshape(-1, 4, 1)
     K, Rt = bnp.camera2np(camera1, use_cv_coord=True)

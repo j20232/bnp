@@ -36,3 +36,6 @@ if True:
 
     # obj
     from bnp.objects.obj import any2np, obj2np, objname2np
+
+    # shading
+    from bnp.objects.shading import set_envmap
