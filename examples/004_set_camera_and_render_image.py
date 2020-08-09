@@ -14,11 +14,17 @@ if __name__ == '__main__':
 
     bnp.scene.remove_objects("debug")
     point_light = bnp.create_light()
-    camera = bnp.create_camera()
+    camera1 = bnp.create_camera(position=[0.0, 0.0, 4.0])
     vertices = (bnp.objname2np("Suzanne", as_homogeneous=True)).reshape(-1, 4, 1)
-    K, Rt = bnp.camera2np(camera, use_cv_coord=True)
+    K, Rt = bnp.camera2np(camera1, use_cv_coord=True)
+    print("Intrinsic: ", K)
+    print("Extrinsic: ", Rt)
+
     KRt = (K @ Rt).reshape(1, 3, 4)
     projected_points = (KRt @ vertices).reshape(-1, 3)
     projected_points = projected_points / projected_points[:, 2].reshape(-1, 1)
-    projected_points /= 100  # for visualization
     bnp.scene.put_cubes(projected_points, size=0.10, sampling_rate=3)
+    P = K @ Rt
+
+    camera2 = bnp.create_camera("debug_reconstructed_camera", P=P, scale=1.0, use_cv_coord=True)
+    camera3 = bnp.create_camera("debug_reconstructed_camera2", K=K, Rt=Rt, scale=1.0, use_cv_coord=True)
