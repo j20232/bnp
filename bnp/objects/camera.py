@@ -136,9 +136,6 @@ def create_camera(name: str = "debug_camera", position: list = [0.0, 0.0, 3.0], 
     else:
         R_world2cv = Rt[0:3, 0:3]
         T_world2cv = Rt[0:3, 3]
-    print("K: ", K)
-    print("R_world2cv: ", R_world2cv)
-    print("T_world2cv: ", T_world2cv)
 
     sensor_width = K[1, 1] * K[0, 2] / (K[0, 0] * K[1, 2])
     sensor_height = 1.0  # doesn't matter
@@ -172,4 +169,5 @@ def create_camera(name: str = "debug_camera", position: list = [0.0, 0.0, 3.0], 
     cam.sensor_width = sensor_width
 
     camera.matrix_world = Matrix.Translation(location) @ rotation.to_4x4()
+    bpy.context.scene.camera = camera
     return camera
