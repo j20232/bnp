@@ -34,6 +34,6 @@ if __name__ == '__main__':
     camera3 = bnp.create_camera("debug_reconstructed_camera2", K=K, Rt=Rt, scale=1.0, use_cv_coord=True)
 
     bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.png"), camera3)
-    bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.exr"), camera3)
+    bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.exr"), camera3, engine="CYCLES")
     bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.mp4"), camera3,
                      animation=True, frame_start=0, frame_end=5)

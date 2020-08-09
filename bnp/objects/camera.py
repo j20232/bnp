@@ -12,7 +12,7 @@ from bnp.objects.base import world_matrix2np, vec2np
 
 def camera2np(camera: bpy.types.Object, render: bpy.types.RenderSettings = bpy.context.scene.render,
               dtype: type = np.float32, frame: int = bpy.context.scene.frame_current,
-              use_cv_coord=False) -> Tuple[np.ndarray]:
+              use_cv_coord: bool = False) -> Tuple[np.ndarray]:
     K = get_intrinsic_parameters(camera, render, dtype)
     Rt = get_extrinsic_parameters(camera, dtype, frame, use_cv_coord)
     return K, Rt
@@ -51,13 +51,13 @@ def get_intrinsic_parameters(camera: bpy.types.Object, render: bpy.types.RenderS
 
     K = np.array([[alpha_u, skew, u_0],
                   [0.0, alpha_v, v_0],
-                  [0.0, 0.0, 1.0]])
+                  [0.0, 0.0, 1.0]], dtype=dtype)
     return K
 
 
 def get_extrinsic_parameters(camera: bpy.types.Object, dtype: type = np.float32,
                              frame: int = bpy.context.scene.frame_current,
-                             use_cv_coord=False) -> np.ndarray:
+                             use_cv_coord: bool = False) -> np.ndarray:
     if not use_cv_coord:
         return world_matrix2np(camera, dtype=dtype, frame=frame)[0:3, 0:4]
     # Reference: https://blender.stackexchange.com/questions/38009/3x4-camera-matrix-from-blender-camera

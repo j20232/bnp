@@ -10,5 +10,8 @@ Utilities to convert Blender's objects to `np.ndarray`
 
    objects_modules/base
    objects_modules/armature
+   objects_modules/camera
+   objects_modules/light
    objects_modules/mesh
    objects_modules/obj
+   objects_modules/shading

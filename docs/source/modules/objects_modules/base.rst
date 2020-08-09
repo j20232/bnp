@@ -6,8 +6,8 @@ bnp.objects.base
 
     Return batched identity matrices
 
-    :param batch_num: number of the batch
-    :param size: size of each matrix
+    :param int batch_num: number of the batch
+    :param int size: size of each matrix
     :param dtype: dtype
     :return: `np.ndarray` (batch_num, size, size)
 
@@ -16,7 +16,7 @@ bnp.objects.base
 
     Convert a vector such as `mathutils.Vector` to `np.ndarray`.
 
-    :param vec: vector
+    :param vec: vector (`mathutils.Vector` or `np.ndarray`)
     :param dtype: dtype
     :return: `np.ndarray` (vector_size)
 
@@ -25,7 +25,7 @@ bnp.objects.base
 
     Convert a matrix such as `mathutils.Matrix` to `np.ndarray`.
 
-    :param vec: matrix
+    :param vec: matrix (`mathutils.Matrix` or `np.ndarray`)
     :param dtype: dtype
     :return: Row-major `np.ndarray` (matrix_size)
 

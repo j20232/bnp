@@ -53,7 +53,8 @@ def export_geom(filepath: str, obj: bpy.types.Object,
 
 def render(filepath: str, camera: bpy.types.Object = bpy.context.scene.camera, animation: bool = False,
            frame_start: int = bpy.context.scene.frame_current, frame_end: int = bpy.context.scene.frame_current + 1,
-           fps: float = 30.0, render: bpy.types.RenderSettings = bpy.context.scene.render, write_still=True):
+           fps: float = 30.0, render: bpy.types.RenderSettings = bpy.context.scene.render, write_still: bool = True,
+           engine: str = "BLENDER_EEVEE", device: str = "GPU"):
     bpy.context.scene.camera = camera
     bpy.context.scene.frame_start = frame_start
     bpy.context.scene.frame_end = frame_end
@@ -74,6 +75,10 @@ def render(filepath: str, camera: bpy.types.Object = bpy.context.scene.camera, a
         render.image_settings.file_format = "FFMPEG"
         render.ffmpeg.format = "MPEG4"
         render.ffmpeg.codec = "H264"
+
+    render.engine = engine
+    if engine == "CYCLES":
+        bpy.context.scene.cycles.device = device
 
     render.filepath = filepath
     bpy.ops.render.render(animation=animation, write_still=write_still)
