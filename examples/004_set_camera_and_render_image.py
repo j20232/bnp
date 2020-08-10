@@ -51,7 +51,7 @@ if __name__ == '__main__':
     print("Extrinsic 3: ", Rt)
 
     # Render with EEVEE
-    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "eevee_out"), camera=camera3, render_mode="all")
+    bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "eevee_out"), camera=camera3, render_mode="all")
 
     # Render with Cycles
     bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="all")  # Output

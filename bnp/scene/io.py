@@ -51,13 +51,13 @@ def export_geom(filepath: str, obj: bpy.types.Object,
     print(f"Exported {obj.name} to {filepath}")
 
 
-def render(filepath: str, ext: str = "exr", camera: bpy.types.Object = bpy.context.scene.camera, animation: bool = False,
+def render(dirpath: str, ext: str = "exr", camera: bpy.types.Object = bpy.context.scene.camera, animation: bool = False,
            frame_start: int = bpy.context.scene.frame_current, frame_end: int = bpy.context.scene.frame_current + 1,
            fps: float = 30.0, render: bpy.types.RenderSettings = bpy.context.scene.render,
            render_mode="all", engine: str = "BLENDER_EEVEE", device: str = "GPU"):
     # Prepare the renderer
-    render_layer, out_layer = _prepare_composit_node(filepath, camera, frame_start, frame_end, render_mode)
-    _set_engine(filepath, ext, render, engine, device, fps)
+    render_layer, out_layer = _prepare_composit_node(dirpath, camera, frame_start, frame_end, render_mode)
+    _set_engine(dirpath, ext, render, engine, device, fps)
     all_modes = ["Image", "Depth", "Mist", "Normal", "Shadow", "AO", "DiffCol", "GlossCol", "Emit"]
     if render_mode in all_modes:
         _render_single_buffer(render_layer, out_layer, render_mode, animation)
@@ -89,17 +89,17 @@ def _render_single_buffer(render_layer, out_layer, render_mode: str, animation: 
     bpy.ops.render.render(animation=animation)
 
 
-def _get_socket_index_from_render_layer(render_layer, socket_name: str = "Image"):
+def _get_socket_index_from_render_layer(render_layer, socket_name: str = "Image") -> int:
     for idx, socket in enumerate(render_layer.outputs):
         if socket.name == socket_name:
             return idx
     return -1
 
 
-def _set_engine(filepath: str, ext: str = "exr", render: bpy.types.RenderSettings = bpy.context.scene.render,
+def _set_engine(dirpath: str, ext: str = "exr", render: bpy.types.RenderSettings = bpy.context.scene.render,
                 engine: str = "BLENDER_EEVEE", device: str = "GPU", fps: float = 30.0):
     render.fps = fps
-    render.filepath = filepath  # directory name
+    render.filepath = dirpath  # directory name
 
     # Set file type
     render.image_settings.file_format = _get_format_from_ext(ext)
@@ -126,9 +126,9 @@ def _set_engine(filepath: str, ext: str = "exr", render: bpy.types.RenderSetting
     bpy.context.scene.view_layers["View Layer"].use_pass_ambient_occlusion = True  # Ambient Occlusion
 
 
-def _prepare_composit_node(filepath: str, camera: bpy.types.Object = bpy.context.scene.camera,
+def _prepare_composit_node(dirpath: str, camera: bpy.types.Object = bpy.context.scene.camera,
                            frame_start: int = bpy.context.scene.frame_current, frame_end: int = bpy.context.scene.frame_current + 1,
-                           render_mode="Image"):
+                           render_mode: str = "Image"):
     bpy.context.scene.camera = camera
     bpy.context.scene.frame_start = frame_start
     bpy.context.scene.frame_end = frame_end
@@ -140,11 +140,11 @@ def _prepare_composit_node(filepath: str, camera: bpy.types.Object = bpy.context
     if render_layer is None:
         render_layer = bpy.context.scene.node_tree.nodes.new("CompositorNodeRLayers")
     out_layer = _generate_output_node(bpy.context.scene.node_tree, render_mode)
-    out_layer.base_path = filepath + "/" + render_mode
+    out_layer.base_path = dirpath + "/" + render_mode
     return render_layer, out_layer
 
 
-def _generate_output_node(node_tree, node_name: str = "Image"):
+def _generate_output_node(node_tree: bpy.types.CompositorNodeTree, node_name: str = "Image") -> bpy.types.CompositorNodeOutputFile:
     layer = None
     node_list = [node.name for node in node_tree.nodes]
     if node_name in node_list:
@@ -155,7 +155,18 @@ def _generate_output_node(node_tree, node_name: str = "Image"):
     return layer
 
 
-def _get_format_from_ext(ext: str):
+def _get_format_from_ext(ext: str) -> str:
+    """Get Blender's format from str extension
+
+    Args:
+        ext (str): "png", "bmp", "jpg", "jpeg", "exr", "hdr" or "mp4"
+
+    Raises:
+        NotImplementedError: illegal extensions
+
+    Returns:
+        str: Blender's format name
+    """
     if ext == "png":
         return "PNG"
     elif ext == "bmp":
