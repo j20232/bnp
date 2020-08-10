@@ -1,3 +1,4 @@
+import bpy
 import numpy as np
 import sys
 from pathlib import Path
@@ -16,9 +17,11 @@ if __name__ == '__main__':
     point_light = bnp.create_light()
     bnp.set_envmap(str(LIBRARY_ROOT_PATH / "assets" / "env_test.png"))
     bnp.scene.import_geom(str(LIBRARY_ROOT_PATH / "assets" / "Suzanne.glb"))
+    suzanne = bpy.context.scene.objects["Suzanne"]
+    suzanne.name = "debug_monkey"
 
     camera1 = bnp.create_camera(position=[0.0, 0.0, 4.0])
-    vertices = (bnp.objname2np("Suzanne", as_homogeneous=True)).reshape(-1, 4, 1)
+    vertices = (bnp.objname2np("debug_monkey", as_homogeneous=True)).reshape(-1, 4, 1)
     K, Rt = bnp.camera2np(camera1, use_cv_coord=True)
     print("Intrinsic: ", K)
     print("Extrinsic: ", Rt)
