@@ -10,7 +10,7 @@ Latest version: 0.3.0
 
 You can easily read Blender's objects with numpy!
 
-## 🚶　Installation
+## 🚶 　 Installation
 
 ### bnp installation
 
@@ -18,8 +18,8 @@ You can easily read Blender's objects with numpy!
 
 e.g. `$YOUR_BLENDER_PATH`: `C:/Program Files/Blender Foundation/Blender 2.83/2.83`
 
-- OK: C:/Program Files/Blender Foundation/Blender 2.83/2.83/scripts/addons_contrib/bnp/__init__.py
-- NG: C:/Program Files/Blender Foundation/Blender 2.83/2.83/scripts/addons_contrib/bnp/bnp/__init__.py
+- OK: C:/Program Files/Blender Foundation/Blender 2.83/2.83/scripts/addons_contrib/bnp/**init**.py
+- NG: C:/Program Files/Blender Foundation/Blender 2.83/2.83/scripts/addons_contrib/bnp/bnp/**init**.py
 
 ### (Appendix) how to install numpy
 
@@ -62,6 +62,12 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
 - [x] Clear unused objects in your Scene
 - [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/assets/screenshots/lbs.png)
 - [x] Simple rendering API
+
+You can render images with offscreen mode as follows:
+
+```sh
+$ blender.exe -b .\004_set_camera_and_render_image.blend -P ..\examples\004_set_camera_and_render_image.py
+```
 
 ## 📄 Documentation
 
