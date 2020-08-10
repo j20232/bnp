@@ -10,7 +10,7 @@ Latest version: 0.3.0
 
 You can easily read Blender's objects with numpy!
 
-## 🚶 　 Installation
+## 🚶 Installation
 
 ### bnp installation
 
