@@ -23,34 +23,24 @@ def get_intrinsic_parameters(camera: bpy.types.Object, render: bpy.types.RenderS
     # Reference: https://blender.stackexchange.com/questions/38009/3x4-camera-matrix-from-blender-camera
     if type(camera.data) is bpy.types.Camera:
         camera = camera.data
+    assert render.resolution_percentage == 100
+    assert camera.sensor_fit != "VERTICAL"
+
     f_in_mm = camera.lens
-    resolution_x = render.resolution_x
-    resolution_y = render.resolution_y
-    scale = render.resolution_percentage / 100
+    image_width = render.resolution_x
+    image_height = render.resolution_y
     sensor_width = camera.sensor_width
-    sensor_height = camera.sensor_height
-    pixel_aspect_ratio = render.pixel_aspect_x / render.pixel_aspect_y
-    if (camera.sensor_fit == 'VERTICAL'):
-        # the sensor height is fixed (sensor fit is horizontal),
-        # the sensor width is effectively changed with the pixel aspect ratio
-        s_u = resolution_x * scale / sensor_width / pixel_aspect_ratio
-        s_v = resolution_y * scale / sensor_height
-    else:  # 'HORIZONTAL' and 'AUTO'
-        # the sensor width is fixed (sensor fit is horizontal),
-        # the sensor height is effectively changed with the pixel aspect ratio
-        pixel_aspect_ratio = render.pixel_aspect_x / render.pixel_aspect_y
-        s_u = resolution_x * scale / sensor_width
-        s_v = resolution_y * scale * pixel_aspect_ratio / sensor_height
+    pixel_aspect_ratio = render.pixel_aspect_y / render.pixel_aspect_x
 
     # Parameters of intrinsic calibration matrix K
-    alpha_u = f_in_mm * s_u
-    alpha_v = f_in_mm * s_v
-    u_0 = resolution_x * scale / 2
-    v_0 = resolution_y * scale / 2
+    f_x = f_in_mm / sensor_width * image_width
+    f_y = f_x * pixel_aspect_ratio
+    c_x = image_width * (0.5 - camera.shift_x)
+    c_y = image_height * 0.5 + image_width * camera.shift_y
     skew = 0  # only use rectangular pixels
 
-    K = np.array([[alpha_u, skew, u_0],
-                  [0.0, alpha_v, v_0],
+    K = np.array([[f_x, skew, c_x],
+                  [0.0, f_y, c_y],
                   [0.0, 0.0, 1.0]], dtype=dtype)
     return K
 
@@ -123,7 +113,7 @@ def rf_rq(P):
 
 
 def create_camera(name: str = "debug_camera", position: list = [0.0, 0.0, 3.0], rotation: list = [0.0, 0.0, 0.0],
-                  align: str = "WORLD", enter_editmode: bool = False,
+                  sensor_width: float = 1.0, align: str = "WORLD", enter_editmode: bool = False,
                   render: bpy.types.RenderSettings = bpy.context.scene.render,
                   P: np.ndarray = None, K: np.ndarray = None, Rt: np.ndarray = None, scale: float = 1.0, use_cv_coord: bool = False) -> bpy.types.Object:
     bpy.ops.object.camera_add(align=align, enter_editmode=enter_editmode, location=position, rotation=rotation)
@@ -136,38 +126,27 @@ def create_camera(name: str = "debug_camera", position: list = [0.0, 0.0, 3.0], 
     else:
         R_world2cv = Rt[0:3, 0:3]
         T_world2cv = Rt[0:3, 3]
-
-    sensor_width = K[1, 1] * K[0, 2] / (K[0, 0] * K[1, 2])
-    sensor_height = 1.0  # doesn't matter
-    resolution_x = K[0, 2] * 2  # principal point assumed at the center
-    resolution_y = K[1, 2] * 2  # principal point assumed at the center
-
-    s_u = resolution_x / sensor_width
-    s_v = resolution_y / sensor_height
-
-    # TODO include aspect ratio
-    f_in_mm = K[0, 0] / s_u
-    # recover original resolution
-    render.resolution_x = resolution_x / scale
-    render.resolution_y = resolution_y / scale
-    render.resolution_percentage = scale * 100
-
-    # Use this if the projection matrix follows the convention listed in my answer to
+    # Extrinsic
     # http://blender.stackexchange.com/questions/38009/3x4-camera-matrix-from-blender-camera
     R_bcam2cv = Matrix(((1, 0, 0), (0, -1, 0), (0, 0, -1))) if use_cv_coord else Matrix.Identity(3)
     R_cv2world = R_world2cv.T
     rotation = Matrix(R_cv2world.tolist()) @ R_bcam2cv
     location = -R_cv2world @ T_world2cv
     camera.location = location
+    camera.matrix_world = Matrix.Translation(location) @ rotation.to_4x4()
 
-    # create a new camera
+    # Intrinsic
+    f_x = K[0, 0]
+    f_y = K[1, 1]
+    c_x = K[0, 2]
+    image_width = c_x * 2  # principal point x assumed at the center
     cam = camera.data
     cam.name = 'CamFrom3x4P'
     cam.type = 'PERSP'
-    cam.lens = f_in_mm
+    cam.lens = f_x / image_width * sensor_width
     cam.lens_unit = 'MILLIMETERS'
     cam.sensor_width = sensor_width
-
-    camera.matrix_world = Matrix.Translation(location) @ rotation.to_4x4()
+    render.pixel_aspect_x = 1.0
+    render.pixel_aspect_y = f_y / f_x
     bpy.context.scene.camera = camera
     return camera

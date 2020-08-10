@@ -20,21 +20,35 @@ if __name__ == '__main__':
     suzanne = bpy.context.scene.objects["Suzanne"]
     suzanne.name = "debug_monkey"
 
+    use_cv_coord = True
     camera1 = bnp.create_camera(position=[0.0, 0.0, 4.0])
+    print("lens1: ", camera1.data.lens)
     vertices = (bnp.objname2np("debug_monkey", as_homogeneous=True)).reshape(-1, 4, 1)
-    K, Rt = bnp.camera2np(camera1, use_cv_coord=True)
-    print("Intrinsic: ", K)
-    print("Extrinsic: ", Rt)
+    K, Rt = bnp.camera2np(camera1, use_cv_coord=use_cv_coord)
+    print("Intrinsic 1: ", K)
+    print("Extrinsic 1: ", Rt)
 
     KRt = (K @ Rt).reshape(1, 3, 4)
     projected_points = (KRt @ vertices).reshape(-1, 3)
     projected_points = projected_points / projected_points[:, 2].reshape(-1, 1)
     projected_points /= 100  # for visualization
-    bnp.scene.put_cubes(projected_points, size=0.10, sampling_rate=3)
+    # bnp.scene.put_cubes(projected_points, size=0.10, sampling_rate=5)
     P = K @ Rt
 
-    camera2 = bnp.create_camera("debug_reconstructed_camera", P=P, scale=1.0, use_cv_coord=True)
-    camera3 = bnp.create_camera("debug_reconstructed_camera2", K=K, Rt=Rt, scale=1.0, use_cv_coord=True)
+    camera2 = bnp.create_camera("debug_reconstructed_camera", P=P, scale=1.0, use_cv_coord=use_cv_coord)
+    print("lens2: ", camera2.data.lens)
+    K, Rt = bnp.camera2np(camera2, use_cv_coord=use_cv_coord)
+    # Note: length of sensor height cannot be reconstructed only with intrinsic parameters,
+    # so, you can get different intrinsic parameters from camera 1
+    print("Intrinsic 2: ", K)
+    print("Extrinsic 2: ", Rt)
+    print("----------")
+
+    camera3 = bnp.create_camera("debug_reconstructed_camera2", K=K, Rt=Rt, scale=1.0, use_cv_coord=use_cv_coord)
+    print("lens3: ", camera3.data.lens)
+    K, Rt = bnp.camera2np(camera3, use_cv_coord=use_cv_coord)
+    print("Intrinsic 3: ", K)
+    print("Extrinsic 3: ", Rt)
 
     bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.png"), camera3)
     bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.exr"), camera3, engine="CYCLES")
