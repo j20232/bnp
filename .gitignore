@@ -10,6 +10,7 @@ __pycache__/
 
 # assets
 *.mp4
+*.exr
 
 # C extensions
 *.so
