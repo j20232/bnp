@@ -56,12 +56,12 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
   - Translation matrices of `bpy.types.Object` and `bpy.types.Armature`
   - Vertex positions of `bpy.types.Mesh`
   - Skinning weights (vertex weights) of `bpy.types.Object`
-  - Blend shapes (shape keys) of `bpy.types.Object`
+  - [Blend shapes (shape keys) of `bpy.types.Object`](https://github.com/j20232/bnp/blob/master/examples/003_blendshape.py)
   - Camera parameters from `bpy.types.Camera`
-- [x] Simple geometry importer/exporter
+- [x] [Simple geometry importer/exporter](https://github.com/j20232/bnp/blob/master/examples/001_load_mesh.py)
 - [x] Clear unused objects in your Scene
-- [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/assets/screenshots/lbs.png)
-- [x] Simple rendering API
+- [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/examples/002_lbs.py)
+- [x] [Simple rendering API](https://github.com/j20232/bnp/blob/master/examples/004_set_camera_and_render_image.py)
 
 You can render images with offscreen mode as follows:
 
