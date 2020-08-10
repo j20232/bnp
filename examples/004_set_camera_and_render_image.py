@@ -50,7 +50,22 @@ if __name__ == '__main__':
     print("Intrinsic 3: ", K)
     print("Extrinsic 3: ", Rt)
 
-    bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.png"), camera3)
-    bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.exr"), camera3, engine="CYCLES")
-    bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "render_out.mp4"), camera3,
-                     animation=True, frame_start=0, frame_end=5)
+    # Render with EEVEE
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "eevee_out"), camera=camera3, render_mode="all")
+
+    # Render with Cycles
+    bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="all")  # Output
+
+    # Export each buffer
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Image")  # Output
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="DiffCol")  # Albedo
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Depth")  # Depth
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Mist")  # Stencil
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Normal")  # Normal
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Shadow")  # Roughness
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Emit")  # Emission
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="GlossCol")  # Metalic
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="AO")  # Ambient Occlusion
+
+    # Export movie
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "eevee_movie"), ext="mp4", camera=camera3, animation=True, frame_start=0, frame_end=3)

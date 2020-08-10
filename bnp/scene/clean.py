@@ -27,6 +27,9 @@ def clear_garbages(remove_world=True):
     for block in bpy.data.materials:
         if block.users == 0:
             bpy.data.materials.remove(block)
+    for block in bpy.data.cameras:
+        if block.users == 0:
+            bpy.data.cameras.remove(block)
     for block in bpy.data.textures:
         if block.users == 0:
             bpy.data.textures.remove(block)
