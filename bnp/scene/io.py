@@ -70,7 +70,7 @@ def render(dirpath: str, ext: str = "exr", camera: bpy.types.Object = bpy.contex
 def _render_all_buffers(render_layer, out_layer, animation: bool):
     socket_idx = _get_socket_index_from_render_layer(render_layer, "Image")
     bpy.context.scene.node_tree.links.new(render_layer.outputs[socket_idx], out_layer.inputs[0])
-    # Depth, Stencil, Normal, Roughness, Ambient Occlusion, Albedo, Metalic, Emission
+    # Depth, Stencil, Normal, Roughness, Ambient Occlusion, Albedo, Metallic, Emission
     all_modes = ["Depth", "Mist", "Normal", "Shadow", "AO", "DiffCol", "GlossCol", "Emit"]
     current_slots = [slot.path for slot in out_layer.file_slots]
     for idx, mode in enumerate(all_modes):
@@ -122,7 +122,7 @@ def _set_engine(dirpath: str, ext: str = "exr", render: bpy.types.RenderSettings
     bpy.context.scene.view_layers["View Layer"].use_pass_mist = True  # Stencil
     bpy.context.scene.view_layers["View Layer"].use_pass_emit = True  # Emission
     bpy.context.scene.view_layers["View Layer"].use_pass_shadow = True  # Roughness
-    bpy.context.scene.view_layers["View Layer"].use_pass_glossy_color = True  # Metalic
+    bpy.context.scene.view_layers["View Layer"].use_pass_glossy_color = True  # Metallic
     bpy.context.scene.view_layers["View Layer"].use_pass_ambient_occlusion = True  # Ambient Occlusion
 
 

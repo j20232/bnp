@@ -34,7 +34,7 @@ bnp.scene.io
     :param int frame_end: final frame. this parameter is only used when `animation==True`
     :param float fps: frame rate. this parameter is only used when `animation==True`
     :param bpy.types.RenderSettings render: render setting in the scene
-    :param str render_mode: type of gbuffers. "all": output all gbuffers. "Image" (rendered image), "Depth", "Mist" (Stencil), "Normal", "Shadow" (Roughness), "AO" (Ambient Occlusion), "DiffCol" (Albedo), "GlossCol" (Metalic) or "Emit" (Emission).
+    :param str render_mode: type of gbuffers. "all": output all gbuffers. "Image" (rendered image), "Depth", "Mist" (Stencil), "Normal", "Shadow" (Roughness), "AO" (Ambient Occlusion), "DiffCol" (Albedo), "GlossCol" (Metallic) or "Emit" (Emission).
     :param str engine: "BLENDER_EEVEE" (GL-based) or "CYCLES" (Path Tracing)
     :param str device: "CPU" or "GPU"
 
