@@ -15,13 +15,13 @@ if __name__ == '__main__':
     bnp.scene.remove_objects("debug")
     point_light = bnp.create_light()
     bnp.set_envmap(str(LIBRARY_ROOT_PATH / "assets" / "env_test.png"))
-    bnp.scene.import_geom(str(LIBRARY_ROOT_PATH / "assets" / "Suzanne.glb"))
-    suzanne = bpy.context.scene.objects["Suzanne"]
-    suzanne.name = "debug_monkey"
+    bnp.scene.import_geom(str(LIBRARY_ROOT_PATH / "assets" / "DamagedHelmet" / "DamagedHelmet.glb"))
+    helmet = bpy.context.scene.objects["node_damagedHelmet_-6514"]
+    helmet.name = "debug_helmet"
 
     use_cv_coord = True
-    camera1 = bnp.create_camera(position=[0.0, 0.0, 4.0])
-    vertices = (bnp.objname2np("debug_monkey", as_homogeneous=True)).reshape(-1, 4, 1)
+    camera1 = bnp.create_camera(position=[0.0, 0.0, 6.0])
+    vertices = (bnp.objname2np("debug_helmet", as_homogeneous=True)).reshape(-1, 4, 1)
     K, Rt = bnp.camera2np(camera1, use_cv_coord=use_cv_coord)
     print("Intrinsic 1: ", K)
     print("Extrinsic 1: ", Rt)
