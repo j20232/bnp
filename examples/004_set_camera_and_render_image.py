@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     # Export each buffer
     # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Image")  # Output
-    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="DiffCol")  # Albedo
+    # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="DiffCol")  # Diffuse
     # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Depth")  # Depth
     # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Mist")  # Stencil
     # bnp.scene.render(str(LIBRARY_ROOT_PATH / "assets" / "cycles_out"), camera=camera3, engine="CYCLES", render_mode="Normal")  # Normal

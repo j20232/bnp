@@ -70,7 +70,7 @@ def render(dirpath: str, ext: str = "exr", camera: bpy.types.Object = bpy.contex
 def _render_all_buffers(render_layer, out_layer, animation: bool):
     socket_idx = _get_socket_index_from_render_layer(render_layer, "Image")
     bpy.context.scene.node_tree.links.new(render_layer.outputs[socket_idx], out_layer.inputs[0])
-    # Depth, Stencil, Normal, Roughness, Ambient Occlusion, Albedo, Metallic, Emission
+    # Depth, Stencil, Normal, Roughness, Ambient Occlusion, Diffuse, Metallic, Emission
     all_modes = ["Depth", "Mist", "Normal", "Shadow", "AO", "DiffCol", "GlossCol", "Emit"]
     current_slots = [slot.path for slot in out_layer.file_slots]
     for idx, mode in enumerate(all_modes):
@@ -116,7 +116,7 @@ def _set_engine(dirpath: str, ext: str = "exr", render: bpy.types.RenderSettings
     else:
         raise NotImplementedError("Illegal engine name!")
     bpy.context.scene.view_layers["View Layer"].use_pass_combined = True  # Output
-    bpy.context.scene.view_layers["View Layer"].use_pass_diffuse_color = True   # Albedo
+    bpy.context.scene.view_layers["View Layer"].use_pass_diffuse_color = True   # Diffuse
     bpy.context.scene.view_layers["View Layer"].use_pass_normal = True  # Normal
     bpy.context.scene.view_layers["View Layer"].use_pass_z = True  # Depth
     bpy.context.scene.view_layers["View Layer"].use_pass_mist = True  # Stencil

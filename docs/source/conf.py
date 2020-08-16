@@ -7,12 +7,12 @@ html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 # -- Project information -----------------------------------------------------
 
-project = 'bnp 0.3.0'
+project = 'bnp 0.4.0'
 copyright = '2020, mocobt'
 author = 'mocobt'
 
 # The full version, including alpha/beta/rc tags
-release = '0.3.0'
+release = '0.4.0'
 master_doc = 'index'
 
 # -- General configuration ---------------------------------------------------

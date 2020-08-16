@@ -6,7 +6,7 @@
 
 bnp contains simple numpy utilities for Blender.
 
-Latest version: 0.3.0
+Latest version: 0.4.0
 
 You can easily read Blender's objects with numpy!
 
@@ -62,6 +62,7 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
 - [x] Clear unused objects in your Scene
 - [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/examples/002_lbs.py)
 - [x] [Simple rendering API](https://github.com/j20232/bnp/blob/master/examples/004_set_camera_and_render_image.py)
+- [x] [Easy API to set PBR materials](https://github.com/j20232/bnp/blob/master/examples/005_assign_pbr_materials.py)
 
 You can render images with offscreen mode as follows:
 

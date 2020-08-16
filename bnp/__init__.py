@@ -39,3 +39,5 @@ if True:
 
     # shading
     from bnp.objects.shading import set_envmap
+    from bnp.objects.shading import create_material, assign_material, create_shader
+    from bnp.objects.shading import add_pbr_textures, add_albedo, add_normal, add_metallic, add_roughness, add_metallic_roughness, add_emissive, add_ao
