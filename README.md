@@ -73,10 +73,12 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
 ![](https://github.com/j20232/bnp/blob/master/assets/screenshots/gbuffer.png)
  - You can easily write rendered images and gbuffers as `.png`, `.bmp`, `.jpg`, `.exr`, `.hdr` and `.mp4`
 
-- [x] [Easy API to set PBR materials](https://github.com/j20232/bnp/blob/master/examples/005_assign_pbr_materials.py)  
+- [x] [PBR material setting API](https://github.com/j20232/bnp/blob/master/examples/005_assign_pbr_materials.py)  
 ![](https://github.com/j20232/bnp/blob/master/assets/screenshots/pbr_material.png)
  - Left: GLTF default shading
  - Right: PBR shading based on [cgbookcase.com](https://www.cgbookcase.com/textures/how-to-use-pbr-textures-in-blender)
+ - You can easily load PBR textures!
+    - Please get them from [FREE PBR](https://freepbr.com/), [textures.com](https://www.textures.com/) and so on
 
 You can render images with offscreen mode as follows:
 
