@@ -60,10 +60,21 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
   - Camera parameters from `bpy.types.Camera`
 - [x] Clear unused objects in your Scene
 - [x] [Simple geometry importer/exporter](https://github.com/j20232/bnp/blob/master/examples/001_load_mesh.py)
-- [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/examples/002_lbs.py)
-- [x] [Blend shape setting API](https://github.com/j20232/bnp/blob/master/examples/003_blendshape.py)
-- [x] [Simple rendering API](https://github.com/j20232/bnp/blob/master/examples/004_set_camera_and_render_image.py)
-- [x] [Easy API to set PBR materials](https://github.com/j20232/bnp/blob/master/examples/005_assign_pbr_materials.py)
+- [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/examples/002_lbs.py)  
+![](https://github.com/j20232/bnp/blob/master/assets/screenshots/lbs.png)
+ - Green box: box deformed with Blender's LBS
+ - White boxes: vertices calculated with bnp's LBS
+
+- [x] [Blend shape setting API](https://github.com/j20232/bnp/blob/master/examples/003_blendshape.py)  
+![](https://github.com/j20232/bnp/blob/master/assets/screenshots/blend_shapes.gif)
+
+- [x] [Simple rendering API](https://github.com/j20232/bnp/blob/master/examples/004_set_camera_and_render_image.py)  
+![](https://github.com/j20232/bnp/blob/master/assets/screenshots/gbuffer.png)
+
+- [x] [Easy API to set PBR materials](https://github.com/j20232/bnp/blob/master/examples/005_assign_pbr_materials.py)  
+![](https://github.com/j20232/bnp/blob/master/assets/screenshots/pbr_material.png)
+ - Left: GLTF default shading
+ - Right: PBR shading based on [cgbookcase.com](https://www.cgbookcase.com/textures/how-to-use-pbr-textures-in-blender)
 
 You can render images with offscreen mode as follows:
 
