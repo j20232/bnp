@@ -56,11 +56,12 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
   - Translation matrices of `bpy.types.Object` and `bpy.types.Armature`
   - Vertex positions of `bpy.types.Mesh`
   - Skinning weights (vertex weights) of `bpy.types.Object`
-  - [Blend shapes (shape keys) of `bpy.types.Object`](https://github.com/j20232/bnp/blob/master/examples/003_blendshape.py)
+  - Blend shapes (shape keys) of `bpy.types.Object`
   - Camera parameters from `bpy.types.Camera`
-- [x] [Simple geometry importer/exporter](https://github.com/j20232/bnp/blob/master/examples/001_load_mesh.py)
 - [x] Clear unused objects in your Scene
+- [x] [Simple geometry importer/exporter](https://github.com/j20232/bnp/blob/master/examples/001_load_mesh.py)
 - [x] [Linear Blend Skinning](https://github.com/j20232/bnp/blob/master/examples/002_lbs.py)
+- [x] [Blend shape setting API](https://github.com/j20232/bnp/blob/master/examples/003_blendshape.py)
 - [x] [Simple rendering API](https://github.com/j20232/bnp/blob/master/examples/004_set_camera_and_render_image.py)
 - [x] [Easy API to set PBR materials](https://github.com/j20232/bnp/blob/master/examples/005_assign_pbr_materials.py)
 
