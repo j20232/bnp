@@ -67,9 +67,11 @@ Don't open `*.blend` files from `Blender.exe` because this library doesn't work 
 
 - [x] [Blend shape setting API](https://github.com/j20232/bnp/blob/master/examples/003_blendshape.py)  
 ![](https://github.com/j20232/bnp/blob/master/assets/screenshots/blend_shapes.gif)
+ - You can easily add blend shapes (shape keys) and insert the keyframes to the scene
 
 - [x] [Simple rendering API](https://github.com/j20232/bnp/blob/master/examples/004_set_camera_and_render_image.py)  
 ![](https://github.com/j20232/bnp/blob/master/assets/screenshots/gbuffer.png)
+ - You can easily write rendered images and gbuffers as `.png`, `.bmp`, `.jpg`, `.exr`, `.hdr` and `.mp4`
 
 - [x] [Easy API to set PBR materials](https://github.com/j20232/bnp/blob/master/examples/005_assign_pbr_materials.py)  
 ![](https://github.com/j20232/bnp/blob/master/assets/screenshots/pbr_material.png)
